@@ -1,0 +1,234 @@
+.auth-container {
+  width: 100%;
+  height: 124vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6e43c5 0%, #e5d6ff 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-container {
+  width: 380px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.form-container.login-mode {
+  height: 420px;
+}
+
+.form-container.signup-mode {
+  height: 520px;
+}
+
+.forms {
+  width: 200%;
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.form-container.login-mode .forms {
+  transform: translateX(0);
+}
+
+.form-container.signup-mode .forms {
+  transform: translateX(-50%);
+}
+
+form {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+form h2 {
+  margin-bottom: 25px;
+  color: #4b0082;
+  text-align: center;
+  font-weight: 600;
+}
+
+.input-group {
+  width: 100%;
+  margin: 15px 0;
+  position: relative;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 15px 12px 40px;
+  border: 2px solid #e0d0ff;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #4b0082;
+  box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.1);
+}
+
+.input-group svg {
+  position: absolute;
+  top: 38px;
+  left: 12px;
+  color: #4b0082;
+  font-size: 16px;
+}
+
+.password-input {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 38px;
+  right: 12px;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.3s;
+}
+
+.password-toggle:hover {
+  color: #4b0082;
+}
+
+.btnn {
+  width: 100%;
+  padding: 14px;
+  margin: 25px 0 15px;
+  background: linear-gradient(135deg, #633386 0%, #6a0dad 100%);
+  color: #af9cb7;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+    box-shadow: 0px 0px 3px 1px  black;
+
+}
+
+.btnn:hover {
+  background: linear-gradient(135deg, #7f3eae 0%, #9d94a4 100%);
+  color: #200c2d;
+  transform: translateY(-2px);
+  transition: all .4s;
+}
+
+.btnn:disabled {
+  background: #927d92;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.success-message {
+  padding: 12px;
+  margin-bottom: 20px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.success-message button {
+  display: block;
+  margin: 10px auto 0;
+  padding: 6px 12px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.success-message button:hover {
+  background: #1b5e20;
+}
+
+.error-message {
+  padding: 12px;
+  margin-bottom: 20px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.toggle-link {
+  color: #666;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.toggle-link span {
+  color: #4b0082;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.toggle-link span:hover {
+  color: #35006b;
+}
+
+.toggle-method {
+  text-align: right;
+  margin: -10px 0 10px;
+  font-size: 13px;
+}
+
+.toggle-method span {
+  color: #4b0082;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.toggle-method span:hover {
+  color: #35006b;
+}
+.headingH{
+  position: absolute;
+  top: 10%;
+  z-index: 2;
+  background: linear-gradient(135deg, #cca2ea 0%, #521a7d 100%);
+  color:rgb(63, 16, 71);
+    box-shadow: 0px 0px 3px 1px  black;
+  height: 15vh;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 60px;
+  font-size: 40px;
+  border-radius: 10%;
+}

@@ -1,0 +1,123 @@
+.department-container {
+      position: absolute;
+    top: 10%;
+    width: 90%;
+    left: 9%;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #888;
+  margin-left: 10px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.search-box input {
+  border: none;
+  margin-left: 8px;
+  outline: none;
+}
+
+.create-btn {
+  background-color: #a259ff;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.department-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.department-table th,
+.department-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.actions .edit-icon {
+  color: green;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.actions .delete-icon {
+  color: red;
+  cursor: pointer;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.footer-info select {
+  margin-left: 5px;
+}
+
+.footer {
+  margin-top: 30px;
+  padding: 15px;
+  background: #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #333;
+}
+
+.footer-logo {
+  background: purple;
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  font-weight: bold;
+}
+
+
+/* Position modal at top center */
+.top-modal .modal-dialog {
+  margin-top: 5vh;
+}
+
+
+/* Ensure modal is top centered */
+.top-modal .modal-dialog {
+  margin-top: 5vh;
+}
+
+/* Remove slide-in animation */
+.no-slide.modal.fade .modal-dialog {
+  transform: none !important;
+  transition: none !important;
+}
+
+

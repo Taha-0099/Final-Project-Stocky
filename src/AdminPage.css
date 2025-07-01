@@ -1,0 +1,325 @@
+/* AdminPage.css */
+
+/* Main Container */
+.admin-container {
+    padding: 1rem;
+    position: absolute;
+    left: 25%;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+    width: 75%;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Header Styles */
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    background-color: #1e40af;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    width: 100%;
+  }
+  
+  .admin-header-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .filter-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    color: #374151;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  
+  .filter-button:hover {
+    background-color: #f9fafb;
+  }
+  
+  /* Metrics Container */
+  .metrics-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .metric-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  .metric-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.25rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+  }
+  
+  .metric-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .metric-title {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+  }
+  
+  .metric-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #111827;
+  }
+  
+  /* Chart Sections */
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .chart-section {
+    background-color: white;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  .grid-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #374151;
+  }
+  
+  .section-icon-blue {
+    color: #3b82f6;
+    margin-right: 0.5rem;
+    font-size: 1.125rem;
+  }
+  
+  .section-icon-yellow {
+    color: #f59e0b;
+    margin-right: 0.5rem;
+    font-size: 1.125rem;
+  }
+  
+  .section-icon-info {
+    color: #9ca3af;
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    cursor: help;
+  }
+  
+  .chart-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  /* Table Styles */
+  .table-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .table-button {
+    padding: 0.25rem 0.5rem;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: #374151;
+    cursor: pointer;
+  }
+  
+  .table-button:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .location-select {
+    margin-bottom: 0.5rem;
+  }
+  
+  .select-field {
+    width: 100%;
+    max-width: 200px;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 0.5rem;
+  }
+  
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .data-table th, .data-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.875rem;
+  }
+  
+  .data-table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  .data-table tbody tr:hover {
+    background-color: #f9fafb;
+  }
+  
+  .no-data {
+    text-align: center;
+    color: #6b7280;
+    padding: 1rem !important;
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  
+  .pagination-button {
+    padding: 0.25rem 0.5rem;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: #374151;
+    cursor: pointer;
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .pagination-button:hover:not(:disabled) {
+    background-color: #e5e7eb;
+  }
+  
+  /* Utility Classes for Icon Colors */
+  .bg-green-100 {
+    background-color: #d1fae5;
+  }
+  
+  .text-green-500 {
+    color: #10b981;
+  }
+  
+  .bg-blue-100 {
+    background-color: #dbeafe;
+  }
+  
+  .text-blue-500 {
+    color: #3b82f6;
+  }
+  
+  .bg-red-100 {
+    background-color: #fee2e2;
+  }
+  
+  .text-red-500 {
+    color: #ef4444;
+  }
+  
+  .bg-yellow-100 {
+    background-color: #fef3c7;
+  }
+  
+  .text-yellow-500 {
+    color: #f59e0b;
+  }
+  
+  .bg-purple-100 {
+    background-color: #ede9fe;
+  }
+  
+  .text-purple-500 {
+    color: #8b5cf6;
+  }
+  
+  .bg-orange-100 {
+    background-color: #ffedd5;
+  }
+  
+  .text-orange-500 {
+    color: #f97316;
+  }
+  
+  .bg-indigo-100 {
+    background-color: #e0e7ff;
+  }
+  
+  .text-indigo-500 {
+    color: #6366f1;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 1024px) {
+    .metrics-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .grid-section {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .metrics-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .admin-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .filter-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }

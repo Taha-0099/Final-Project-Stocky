@@ -1,0 +1,137 @@
+.at-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: white;
+    position: absolute;
+    top: 10%;
+    left: 8%;
+    width: 90%;
+}
+
+.at-header h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.at-subtitle {
+  font-weight: normal;
+  color: #777;
+}
+
+.at-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.at-search input {
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.at-buttons .btn {
+  margin-left: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-filter {
+  background-color: #e8f0fe;
+  color: #007bff;
+}
+
+.btn-pdf {
+  background-color: #fdecea;
+  color: #dc3545;
+}
+
+.btn-excel {
+  background-color: #e8f5e9;
+  color: #28a745;
+}
+
+.btn-create {
+  background-color: #dcd3ff;
+  color: #6f42c1;
+}
+
+.at-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.at-table th, .at-table td {
+  padding: 12px;
+  border: 1px solid #eee;
+  text-align: left;
+}
+
+.at-table thead {
+  background-color: #f9f9f9;
+}
+
+.status-completed {
+  background-color: #e8f5e9;
+  color: #28a745;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.action-icons .icon {
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.icon.print {
+  color: #9b59b6;
+}
+.icon.view {
+  color: #27ae60;
+}
+.icon.edit {
+  color: #2e86de;
+}
+.icon.delete {
+  color: #e74c3c;
+}
+
+.at-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.pagination-nav {
+  cursor: pointer;
+  color: #007bff;
+}
+
+.at-footer {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #f1f1f1;
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+}

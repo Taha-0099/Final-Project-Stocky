@@ -1,0 +1,254 @@
+.employ-content {
+    position: absolute;
+    top: 10%;
+    left: 3%;
+    width: 90%;
+  background: #fff;
+  margin-left: 70px;
+  min-height: 100vh;
+  padding: 40px 40px 0 40px;
+  font-family: 'Inter', sans-serif;
+}
+
+.employ-header h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -1px;
+}
+
+.employ-breadcrumb {
+  font-size: 1.1rem;
+  color: #808090;
+  margin-left: 12px;
+  font-weight: 400;
+}
+
+.employ-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 22px;
+  gap: 24px;
+}
+
+.employ-search {
+  display: flex;
+  align-items: center;
+  background: #f7f7f7;
+  padding: 6px 18px 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #ececf2;
+  box-shadow: none;
+  gap: 12px;
+}
+
+.employ-search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1.09rem;
+  color: #23233a;
+  width: 190px;
+}
+
+.search-icon {
+  color: #bbb;
+  font-size: 1.1rem;
+}
+
+.employ-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.employ-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1.05rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: none;
+  outline: none;
+  transition: background 0.18s;
+}
+
+.employ-btn.filter {
+  background: #f5f8fc;
+  color: #1976d2;
+  border: 1.2px solid #1976d2;
+}
+.employ-btn.filter:hover {
+  background: #eaf4fc;
+}
+
+.employ-btn.pdf {
+  background: #f5f8fc;
+  color: #1abc9c;
+  border: 1.2px solid #1abc9c;
+}
+.employ-btn.pdf:hover {
+  background: #e5faf7;
+}
+
+.employ-btn.excel {
+  background: #f5f8fc;
+  color: #e74c3c;
+  border: 1.2px solid #e74c3c;
+}
+.employ-btn.excel:hover {
+  background: #fcf1ee;
+}
+
+.employ-btn.create {
+  background: #9b59b6;
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(155,89,182,.10);
+}
+.employ-btn.create:hover {
+  background: #84469a;
+}
+
+.employ-table-wrap {
+  border-radius: 14px;
+  overflow-x: auto;
+  box-shadow: 0 2px 16px 0 rgba(44,62,80,0.06);
+  background: #fff;
+  margin-bottom: 10px;
+}
+
+.employ-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 1.02rem;
+}
+
+.employ-table th, .employ-table td {
+  padding: 13px 16px;
+  border-bottom: 1.5px solid #ececf2;
+  text-align: left;
+  background: #fff;
+}
+
+.employ-table th {
+  background: #fafbfc;
+  color: #474773;
+  font-weight: 600;
+  font-size: 1.07rem;
+  position: relative;
+}
+
+.sort-arrow {
+  font-size: .85em;
+  color: #c0c0cc;
+  margin-left: 2px;
+}
+
+.employ-table td {
+  color: #43436b;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.action-col {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.icon-btn {
+  background: #f5f7fa;
+  border: 1.5px solid #ececf2;
+  border-radius: 5px;
+  padding: 5px 7px;
+  margin: 0 2px;
+  font-size: 1.09rem;
+  cursor: pointer;
+  transition: background 0.17s, border 0.17s;
+  outline: none;
+}
+
+.icon-btn.view {
+  color: #1e88e5;
+}
+.icon-btn.view:hover {
+  background: #e3f2fd;
+  border-color: #90caf9;
+}
+.icon-btn.edit {
+  color: #2ecc71;
+}
+.icon-btn.edit:hover {
+  background: #eafaf1;
+  border-color: #2ecc71;
+}
+.icon-btn.delete {
+  color: #e74c3c;
+}
+.icon-btn.delete:hover {
+  background: #ffebee;
+  border-color: #e74c3c;
+}
+
+.employ-footer-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0 0 0;
+  color: #7c7c8d;
+  font-size: 1rem;
+}
+
+.employ-footer-bar select {
+  border: none;
+  background: transparent;
+  color: #2d2d44;
+  font-size: 1rem;
+  margin-left: 3px;
+}
+
+.page-nav {
+  display: flex;
+  gap: 7px;
+}
+.page-nav .disabled {
+  color: #d0d0d0;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.employ-bottom-footer {
+  margin-top: 34px;
+  background: #f5f7fa;
+  border-radius: 14px;
+  padding: 30px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-badge {
+  display: flex;
+  align-items: center;
+}
+
+.footer-badge-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background: #9b59b6;
+  color: #fff;
+  font-size: 1.8rem;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px 0 rgba(155,89,182,.10);
+}

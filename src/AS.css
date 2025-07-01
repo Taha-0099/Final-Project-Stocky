@@ -1,0 +1,98 @@
+.as-container {
+    
+    position: absolute;
+    top: 10%;
+    left: 8%;
+    width: 90%;
+  padding: 20px;
+  font-family: Arial;
+}
+
+.breadcrumb {
+  font-size: 0.9em;
+  color: #888;
+  margin-left: 10px;
+}
+
+.as-toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  margin-left: 8px;
+}
+
+.actions button {
+  margin-left: 8px;
+  padding: 6px 10px;
+  border: none;
+  background: #eaeaea;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.create-btn {
+  background-color: #a259ff;
+  color: #fff;
+}
+
+.as-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.as-table th, .as-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.link {
+  color: #7e56f2;
+  cursor: pointer;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.status.completed { background-color: #e0f7fa; color: #009688; }
+.status.ordered { background-color: #fff3e0; color: #ff9800; }
+
+.payment.partial { background-color: #f3e5f5; color: #9c27b0; }
+.payment.paid { background-color: #e8f5e9; color: #4caf50; }
+.payment.unpaid { background-color: #fff3e0; color: #fb8c00; }
+
+.shipping.delivered { background-color: #e8f5e9; color: #388e3c; }
+.shipping.packed { background-color: #e3f2fd; color: #1e88e5; }
+.shipping.shipped { background-color: #f5f5f5; color: #000; }
+.shipping.cancelled { background-color: #ffebee; color: #e53935; }
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  font-size: 13px;
+  color: #777;
+}
+.footer-logo {
+  font-weight: bold;
+  font-size: 24px;
+}

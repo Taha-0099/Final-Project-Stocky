@@ -1,0 +1,204 @@
+body {
+    background-color: #f9fafb; /* Light gray background */
+    color: #4b5563; /* Gray text */
+    font-family: 'Arial', sans-serif; /* Font family */
+    font-size: 12px; /* Base font size */
+    line-height: 1.5; /* Line height */
+  }
+  
+  .container {
+    width: 100%;
+    position: absolute;
+    left: 15%;
+    top: 8%;
+    padding: 16px; /* Padding around the container */
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px; /* Space below header */
+  }
+  
+  .title {
+    font-weight: 600; /* Bold title */
+    color: #ededed; /* Blue color */
+    cursor: pointer; /* Pointer cursor */
+    margin-right: 8px; /* Space between title and subtitle */
+  }
+  
+  .subtitle {
+    color: #6b7280; /* Gray color for subtitle */
+    font-size: 10px; /* Smaller font size */
+  }
+  
+  .filter-button {
+    display: flex;
+    align-items: center;
+    color: #3b82f6; /* Blue color */
+    border: 1px solid #3b82f6; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 4px 8px; /* Padding */
+    font-size: 10px; /* Smaller font size */
+    margin-bottom: 8px; /* Space below button */
+  }
+  
+  .nav-container {
+    background-color: #ffffff; /* White background */
+    border: 1px solid #e5e7eb; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 8px; /* Padding */
+    margin-bottom: 8px; /* Space below nav */
+  }
+  
+  .nav {
+    display: flex; /* Flexbox for navigation */
+    gap: 16px; /* Space between nav items */
+    font-size: 10px; /* Smaller font size */
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    color: #6b7280; /* Gray color */
+    text-decoration: none; /* No underline */
+  }
+  
+  .nav-item.active {
+    border-bottom: 2px solid #3b82f6; /* Blue underline for active item */
+    color: #3b82f6; /* Blue color for active item */
+  }
+  
+  .options-container {
+    background-color: #ffffff; /* White background */
+    border: 1px solid #e5e7eb; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 8px; /* Padding */
+    margin-bottom: 8px; /* Space below options */
+    font-size: 10px; /* Smaller font size */
+  }
+  
+  .show-entries {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Space between elements */
+  }
+  
+  .export-buttons {
+    display: flex;
+    gap: 4px; /* Space between buttons */
+    justify-content: center; /* Center buttons */
+    margin-top: 8px; /* Space above buttons */
+  }
+  
+  .export-buttons button {
+    border: 1px solid #d1d5db; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 4px 8px; /* Padding */
+    font-size: 8px; /* Smaller font size */
+    cursor: pointer; /* Pointer cursor */
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 8px; /* Space between buttons */
+    margin-bottom: 8px; /* Space below buttons */
+  }
+  
+  .add-button, .download-button {
+    display: flex;
+    align-items: center;
+    background-color: #3b82f6; /* Blue background */
+    color: white; /* White text */
+    border-radius: 4px; /* Rounded corners */
+    padding: 4px 12px; /* Padding */
+    font-size: 10px; /* Smaller font size */
+    cursor: pointer; /* Pointer cursor */
+  }
+  
+  .search-container {
+    margin-bottom: 8px; /* Space below search */
+  }
+  
+  .search-container input {
+    border: 1px solid #d1d5db; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 4px 8px; /* Padding */
+    width: 160px; /* Fixed width */
+  }
+  
+  .table-container {
+    overflow-x: auto; /* Horizontal scroll for table */
+    border: 1px solid #d1d5db; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #ffffff; /* White background */
+  }
+  
+  table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Collapse borders */
+    font-size: 10px; /* Smaller font size */
+  }
+  
+  th, td {
+    border: 1px solid #d1d5db; /* Light gray border */
+    padding: 8px; /* Padding */
+    text-align: left; /* Left align text */
+  }
+  
+  th {
+    background-color: #f3f4f6; /* Light gray background for header */
+    color: #4b5563; /* Gray text */
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f9fafb; /* Light gray for even rows */
+  }
+  
+  .footer {
+    display: flex;
+    flex-direction: column; /* Stack footer elements */
+    margin-top: 16px; /* Space above footer */
+  }
+  
+  .footer-buttons {
+    display: flex;
+    gap: 4px; /* Space between buttons */
+    margin-bottom: 8px; /* Space below buttons */
+  }
+  
+  .footer-buttons button {
+    border: 1px solid #d1d5db; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 4px 8px; /* Padding */
+    font-size: 8px; /* Smaller font size */
+    cursor: pointer; /* Pointer cursor */
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: space-between; /* Space between pagination elements */
+    align-items: center; /* Center align items */
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 4px; /* Space between pagination buttons */
+  }
+  
+  .pagination-buttons button {
+    border: 1px solid #d1d5db; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 4px 8px; /* Padding */
+    cursor: pointer; /* Pointer cursor */
+  }
+  
+  .pagination-buttons .active {
+    background-color: #3b82f6; /* Blue background for active page */
+    color: white; /* White text for active page */
+  }
+  .imgs{
+    height: 50px;
+    width: 50px;
+  }

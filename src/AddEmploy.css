@@ -1,0 +1,95 @@
+.ae-wrapper {
+  padding: 30px 18px 0 18px;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.ae-breadcrumb {
+  font-size: 1rem;
+  color: #9094ad;
+  margin-left: 12px;
+}
+
+.ae-form-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px 0 rgba(44,62,80,0.08);
+  padding: 28px 24px 22px 24px;
+  max-width: 1400px;
+  margin: 24px auto 0 auto;
+}
+
+.ae-form .ae-row {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 20px;
+}
+
+.ae-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ae-field label {
+  font-size: 1rem;
+  margin-bottom: 7px;
+  color: #3b3c55;
+  font-weight: 500;
+}
+
+.ae-field input, .ae-field select {
+  padding: 10px 14px;
+  border: 1.2px solid #d3d7e2;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-size: 1.05rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.ae-field input:focus, .ae-field select:focus {
+  border-color: #9b59b6;
+  background: #fff;
+}
+
+.ae-submit {
+  background: #9b59b6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.18s;
+  display: flex;
+  align-items: center;
+}
+.ae-submit:hover { background: #7d48a3; }
+
+.ae-list {
+  margin: 38px auto 0 auto;
+  max-width: 1400px;
+  padding: 0 16px;
+}
+
+.ae-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+.ae-list th, .ae-list td {
+  padding: 8px 12px;
+  border-bottom: 1.1px solid #ececf2;
+  text-align: left;
+  font-size: 0.97rem;
+}
+
+.ae-list th {
+  background: #fafbfc;
+  font-weight: 600;
+  color: #474773;
+}
