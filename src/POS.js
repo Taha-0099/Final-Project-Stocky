@@ -15,7 +15,9 @@ import {
   faImage,
   faPlus
 } from '@fortawesome/free-solid-svg-icons';
+import SideBar from './SideBar';
 import './POS.css';
+import './SidebarDrawer.css';
 
 const POS = () => {
   const [customer, setCustomer] = useState('walk-in-customer');
@@ -31,20 +33,17 @@ const POS = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // Fetch products from correct endpoint
   useEffect(() => {
     setLoading(true);
     setError('');
-    
     axios.get('http://localhost:5001/Products')
       .then(res => {
-        console.log('Fetched products:', res.data); // Debug log
         setProducts(res.data);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Fetch products error:', err);
         setError('Failed to fetch products');
         setLoading(false);
       });
@@ -55,22 +54,14 @@ const POS = () => {
     setCurrentPage(1);
   }, []);
 
-  // Helper function to get total stock (matching your AP.js logic)
   const getTotalStock = (product) => {
     const q1 = product.openingStock1 || 0;
     const q2 = product.openingStock2 || 0;
     return q1 + q2;
   };
 
-  // Helper function to get price from product object
   const getProductPrice = (product) => {
-    // Based on your AP.js, the correct field names are:
     return Number(product.productPrice || product.price || product.sellingPrice || product.salePrice || 0);
-  };
-
-  // Helper function to get cost from product object
-  const getProductCost = (product) => {
-    return Number(product.productCost || product.cost || 0);
   };
 
   const calculateTotal = useCallback(
@@ -87,7 +78,6 @@ const POS = () => {
     return (subtotal + taxAmt + shipping - discount).toFixed(2);
   }, [calculateTotal, tax, discount, shipping]);
 
-  // Add to cart: normalize price into item.price so fallback always works
   const addToCart = useCallback(product => {
     const priceVal = getProductPrice(product);
     setCartItems(prev => {
@@ -97,12 +87,11 @@ const POS = () => {
           i._id === product._id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
-      // Store the price in a standardized field
       return [...prev, { 
         ...product, 
         quantity: 1, 
         price: priceVal,
-        displayPrice: priceVal // Keep original for display
+        displayPrice: priceVal 
       }];
     });
   }, []);
@@ -119,7 +108,6 @@ const POS = () => {
     });
   }, []);
 
-  // Filter and paginate products
   const filteredProducts = useMemo(
     () => products.filter(p => {
       const nm = p.name?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -144,11 +132,39 @@ const POS = () => {
     setShipping(0);
   };
 
+  // --- Sidebar Drawer Render ---
   return (
     <div className="pos-container">
-      {/* HEADER */}
+      {/* Sidebar Drawer & Overlay */}
+      <div className={`sidebar-drawer-overlay ${drawerOpen ? "open" : ""}`} onClick={() => setDrawerOpen(false)}></div>
+      <div className={`sidebar-drawer ${drawerOpen ? "open" : ""}`}>
+        <button className="sidebar-drawer-close-btn" onClick={() => setDrawerOpen(false)} aria-label="Close sidebar">
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
+        <SideBar />
+      </div>
+
+      {/* Main POS UI */}
       <header className="pos-header">
-        <div className="pos-logo"><FontAwesomeIcon icon={faStore} /> POS System</div>
+        <button
+          className="sidebar-drawer-header-btn"
+          onClick={() => setDrawerOpen(true)}
+          aria-label="Open sidebar"
+          style={{
+            background: "none",
+            border: "none",
+            color: "#7c53c3",
+            fontSize: "1.75rem",
+            cursor: "pointer",
+            marginRight: "14px"
+          }}
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </button>
+        <div className="pos-logo">
+          <FontAwesomeIcon icon={faStore} style={{ marginRight: "5px" }} />
+          POS System
+        </div>
         <div className="pos-actions">
           <button className="action-btn"><FontAwesomeIcon icon={faSave} /></button>
           <button className="action-btn"><FontAwesomeIcon icon={faPrint} /></button>
@@ -311,15 +327,6 @@ const POS = () => {
               <FontAwesomeIcon icon={faImage}/> Brands
             </button>
           </div>
-          
-          <div className="search-bar">
-            <FontAwesomeIcon icon={faSearch} className="search-icon"/>
-            <input 
-              placeholder="Search by name, code, brand, or category" 
-              value={searchTerm} 
-              onChange={handleSearch}
-            />
-          </div>
 
           {error && (
             <div className="error-message">
@@ -345,7 +352,7 @@ const POS = () => {
                       <div className="product-img">
                         {p.imgurl ? (
                           <img src={p.imgurl} alt={p.name} onError={(e) => {
-                            e.target.src = '/placeholder-image.jpg'; // Fallback image
+                            e.target.src = '/placeholder-image.jpg';
                           }}/>
                         ) : (
                           <div className="no-image">No Image</div>
@@ -427,7 +434,7 @@ const POS = () => {
   );
 };
 
-// ENHANCED PAYMENT MODAL COMPONENT
+// ENHANCED PAYMENT MODAL COMPONENT (matching screenshot)
 function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }) {
   const [payingAmount, setPayingAmount] = useState(total);
   const [paymentMethod, setPaymentMethod] = useState('Cash');
@@ -460,7 +467,6 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
 
   const handleQuickAmount = (amount) => {
     setPayingAmount(amount.toString());
-    // Update the first payment amount
     setPayments(prev => prev.map((payment, index) => 
       index === 0 ? { ...payment, amount: amount.toString() } : payment
     ));
@@ -491,62 +497,41 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
   return (
     <div className="enhanced-modal-overlay">
       <div className="enhanced-payment-modal">
-        <header className="enhanced-pm-header">
-          <h2>Payment</h2>
-          <span className="total-amount">${total}</span>
+        <header className="enhanced-pm-header" style={{ borderBottom: "1px solid #e5dbfa", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontWeight: 400, fontSize: 16, color: "#222" }}>Payment</span>
+          <span style={{ color: "#37c999", fontWeight: 600, fontSize: 18 }}>${total}</span>
           <button className="enhanced-pm-close" onClick={onClose}>
             <FontAwesomeIcon icon={faTimes}/>
           </button>
         </header>
-        
-        <div className="enhanced-pm-body">
-          <div className="payment-left-section">
-            <div className="customer-section">
-              <h3>{customer}</h3>
-              <div className="order-summary">
-                <div className="items-count">{cartItems.length} items</div>
+        <div className="enhanced-pm-body" style={{ display: 'flex', flexDirection: 'row', background: "#fff", marginTop: 0, padding: '38px 32px 24px 32px', gap: 36 }}>
+          {/* LEFT PANE */}
+          <div style={{ flex: 0.9, maxWidth: 270 }}>
+            {/* Top summary card */}
+            <div style={{
+              background: "#f5f0ff", 
+              borderRadius: 11,
+              marginBottom: 25,
+              boxShadow: "0 1px 7px #b393e722",
+              padding: "14px 18px 12px 20px"
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+                <FontAwesomeIcon icon={faUser} style={{ color: '#7c53c3', marginRight: 6 }} />
+                <span style={{ fontWeight: 600, fontSize: 15 }}>{customer}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', fontSize: 13, marginBottom: 4 }}>
+                <FontAwesomeIcon icon={faShoppingCart} style={{ color: "#a892e8", fontSize: 15, marginRight: 7 }} />
+                <span>{cartItems.length} items</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', fontSize: 13, gap: 1 }}>
+                <span>Total Paying: <b>${payments[0].amount || total}</b></span>
+                <span>Balance: <b>${balance}</b></span>
+                <span>Change Return: <b>${changeReturn}</b></span>
               </div>
             </div>
 
-            {/* Payment Methods */}
-            <div className="payment-methods-section">
-              {payments.map((payment, index) => (
-                <div key={payment.id} className="payment-method-row">
-                  <div className="payment-indicator">
-                    <span className="payment-icon">💰</span>
-                    <div className="payment-details">
-                      <div className="payment-label">
-                        {index === 0 ? 'Total Paying' : `Payment #${index + 1}`}
-                      </div>
-                      <div className="payment-amount">${payment.amount || '0.00'}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              <div className="balance-section">
-                <div className="balance-indicator">
-                  <span className="balance-icon">💳</span>
-                  <div className="balance-details">
-                    <div className="balance-label">Balance</div>
-                    <div className="balance-amount">${balance}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="change-section">
-                <div className="change-indicator">
-                  <span className="change-icon">💸</span>
-                  <div className="change-details">
-                    <div className="change-label">Change Return</div>
-                    <div className="change-amount">${changeReturn}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Payment Form */}
-            <div className="payment-form-section">
+            {/* Payment form fields */}
+            <div style={{ marginBottom: 10 }}>
               <div className="form-group">
                 <label>Paying Amount *</label>
                 <input 
@@ -556,7 +541,6 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
                   className="paying-amount-input"
                 />
               </div>
-
               <div className="form-group">
                 <label>Payment choice *</label>
                 <div className="payment-choice-container">
@@ -572,18 +556,17 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
                     <option value="Bank Transfer">Bank Transfer</option>
                     <option value="Check">Check</option>
                   </select>
-                  <button className="remove-payment-btn">×</button>
+                  <button className="remove-payment-btn" style={{marginLeft: 4}}>×</button>
                 </div>
               </div>
-
-              <button className="add-another-payment-btn" onClick={addAnotherPayment}>
-                <FontAwesomeIcon icon={faPlus} /> Add Another Payment Option
-              </button>
             </div>
 
-            {/* Quick Amount Buttons */}
-            <div className="popular-tenders-section">
-              <label>Popular Tenders</label>
+            <button className="add-another-payment-btn" onClick={addAnotherPayment}>
+              <FontAwesomeIcon icon={faPlus} /> Add Another Payment Option
+            </button>
+            {/* Popular Tenders */}
+            <div className="popular-tenders-section" style={{ marginTop: 15 }}>
+              <label>Popular Tendered</label>
               <div className="quick-amounts">
                 {quickAmounts.map((amount, index) => (
                   <button 
@@ -597,10 +580,10 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
               </div>
             </div>
           </div>
-
-          <div className="payment-right-section">
-            {/* Numeric Keypad */}
-            <div className="numeric-keypad">
+          {/* RIGHT PANE */}
+          <div style={{ flex: 1.3, minWidth: 320, maxWidth: 430 }}>
+            {/* Keypad */}
+            <div className="numeric-keypad" style={{ marginBottom: 18 }}>
               <div className="keypad-row">
                 <button onClick={() => handleKeypadClick('1')}>1</button>
                 <button onClick={() => handleKeypadClick('2')}>2</button>
@@ -622,8 +605,7 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
                 <button onClick={() => handleKeypadClick('.')}>.</button>
               </div>
             </div>
-
-            {/* Notes Section */}
+            {/* Notes section */}
             <div className="notes-section">
               <div className="notes-row">
                 <div className="note-group">
@@ -644,8 +626,7 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
                 </div>
               </div>
             </div>
-
-            {/* Account Selection */}
+            {/* Account select */}
             <div className="account-section">
               <label>Account</label>
               <select 
@@ -659,8 +640,7 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
                 <option>Credit Account</option>
               </select>
             </div>
-
-            {/* Communication Options */}
+            {/* Email/SMS */}
             <div className="communication-section">
               <div className="comm-options">
                 <label className="checkbox-label">
@@ -683,7 +663,6 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
             </div>
           </div>
         </div>
-
         {/* Footer */}
         <div className="enhanced-pm-footer">
           <button 
@@ -691,7 +670,7 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
             onClick={onConfirm}
             disabled={totalPaying < parseFloat(total)}
           >
-            Pay ${total}
+            Pay
           </button>
         </div>
       </div>

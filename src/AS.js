@@ -2,7 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import './AS.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faFilter, faFilePdf, faFileExcel, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSearch, faFilter, faFilePdf, faFileExcel,
+  faBarcode, faBars, faPlus,
+  faExpandArrowsAlt, faGlobe, faBell
+} from '@fortawesome/free-solid-svg-icons';
+import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
+
 import SideBar from './SideBar';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -20,9 +26,22 @@ const AS = () => {
     <>
       <SideBar/>
 
-      <header className="dashboard-header">
-        {/* … same header … */}
-      </header>
+           <header className="dashboard-header">
+             <div className="logo-section">
+               <div className="logo">S</div>
+               <FontAwesomeIcon icon={faBars} className="icon" />
+             </div>
+             <div className="header-icons">
+               <button className="pos-btn">POS</button>
+               <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
+               <FontAwesomeIcon icon={faGlobe} className="icon" />
+               <div className="notification-icon">
+                 <FontAwesomeIcon icon={farBell} className="icon" />
+                 <span className="badge">1</span>
+               </div>
+               <div className="brand-name">STOCKY</div>
+             </div>
+           </header>
 
       <div className="as-container">
         <h2>All Sales <span className="breadcrumb">Sales | All Sales</span></h2>

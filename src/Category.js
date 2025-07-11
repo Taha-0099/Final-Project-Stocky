@@ -1,34 +1,19 @@
 import React, { useState } from 'react';
 import './Category.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTimes, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { Modal, Button, Form } from 'react-bootstrap';
-import {
-  faBarcode,
-  faBars,
-  faExpandArrowsAlt,
-  faGlobe,
-  faShoppingCart,
-  faClipboardList,
-  faChartBar,
-  faBoxes,
-  faExchangeAlt,
-  faFileInvoice,
-  faArrowRight,
-  faArrowLeft,
-  faCog
-} from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTimes, faPlus, faSearch, faBars, faExpandArrowsAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
-
-import SideBar from './SideBar'
+import { Modal, Button, Form } from 'react-bootstrap';
+import SideBar from './SideBar';
 
 const Category = () => {
   const [categories, setCategories] = useState([
+    { code: 'CA6', name: 'Fruits' },
+    { code: 'CA5', name: 'Shoes' },
+    { code: 'CA4', name: 'T-Shirts' },
     { code: 'CA3', name: 'Jackets' },
     { code: 'CA2', name: 'Computers' },
-    { code: 'CA1', name: 'Accessories' },
   ]);
-
   const [show, setShow] = useState(false);
   const [newCategory, setNewCategory] = useState({ code: '', name: '' });
 
@@ -47,8 +32,7 @@ const Category = () => {
 
   return (
     <>
-<SideBar/>
-
+      <SideBar />
 
       <header className="dashboard-header">
         <div className="logo-section">
@@ -67,13 +51,14 @@ const Category = () => {
         </div>
       </header>
 
+      <div className="category-main-content">
+        <h2>
+          Category
+          <span className="breadcrumb">Products | Category</span>
+        </h2>
 
-    <div className="category-container">
-      <h3>Category <span className="breadcrumb">Products | Category</span></h3>
-
-      <div className="category-toolbar">
-        <div className="search-create">
-          <div className="search-box">
+        <div className="category-toolbar">
+          <div className="search-wrapper">
             <FontAwesomeIcon icon={faSearch} className="search-icon" />
             <input type="text" placeholder="Search this table" />
           </div>
@@ -81,53 +66,55 @@ const Category = () => {
             <FontAwesomeIcon icon={faPlus} /> Create
           </button>
         </div>
-      </div>
 
-      <table className="category-table">
-        <thead>
-          <tr>
-            <th><input type="checkbox" /></th>
-            <th>Category Code</th>
-            <th>Category Name</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((cat, index) => (
-            <tr key={index}>
-              <td><input type="checkbox" /></td>
-              <td>{cat.code}</td>
-              <td>{cat.name}</td>
-              <td className="action-icons">
-                <FontAwesomeIcon icon={faPen} className="edit" />
-                <FontAwesomeIcon icon={faTimes} className="delete" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="category-footer">
-        <span>Rows per page:
-          <select>
-            <option>10</option>
-            <option>20</option>
-          </select>
-        </span>
-        <span>1 - {categories.length} of {categories.length}</span>
-        <span className="pagination">prev | next</span>
-      </div>
-
-      <footer className="footer">
-        <div>
-          <strong>Stocky - Ultimate Inventory With POS</strong><br />
-          © 2025 Developed by Stocky<br />
-          All rights reserved - v4.0.9
+        <div className="category-card">
+          <table className="category-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" /></th>
+                <th>Category Code</th>
+                <th>Category Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {categories.map((cat, index) => (
+                <tr key={index}>
+                  <td><input type="checkbox" /></td>
+                  <td>{cat.code}</td>
+                  <td>{cat.name}</td>
+                  <td className="action-icons">
+                    <FontAwesomeIcon icon={faPen} className="edit" />
+                    <FontAwesomeIcon icon={faTimes} className="delete" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div className="footer-logo">S</div>
-      </footer>
 
-      {/* Bootstrap Modal */}
+        <div className="category-footer">
+          <span>Rows per page:
+            <select>
+              <option>10</option>
+              <option>20</option>
+            </select>
+          </span>
+          <span>1 - {categories.length} of {categories.length}</span>
+          <span className="pagination">prev | next</span>
+        </div>
+
+        <footer className="footer">
+          <div>
+            <strong>Stocky - Ultimate Inventory With POS</strong><br />
+            © 2025 Developed by Stocky<br />
+            All rights reserved - v4.0.9
+          </div>
+          <div className="footer-logo">S</div>
+        </footer>
+      </div>
+
+      {/* Modal for adding category */}
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Create Category</Modal.Title>
@@ -157,7 +144,6 @@ const Category = () => {
           <Button variant="primary" onClick={handleCreateCategory}>Submit</Button>
         </Modal.Footer>
       </Modal>
-    </div>
     </>
   );
 };
