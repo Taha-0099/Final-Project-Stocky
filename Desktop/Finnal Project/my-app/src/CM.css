@@ -1,0 +1,111 @@
+.customer-container {
+          position: absolute;
+  top: 10%;
+  left: 8%;
+  width: 90%;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.breadcrumb {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.top-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f5f5;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.action-buttons button {
+  margin-left: 10px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+
+.action-buttons .pdf {
+  color: green;
+  border-color: green;
+}
+
+.action-buttons .excel {
+  color: red;
+  border-color: red;
+}
+
+.action-buttons .import {
+  color: blue;
+  border-color: blue;
+}
+
+.action-buttons .create {
+  background: #8a5cf6;
+  color: white;
+  border: none;
+}
+
+.customer-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 15px;
+}
+
+.customer-table th,
+.customer-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.customer-table th input[type="checkbox"],
+.customer-table td input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: gray;
+  margin-top: 10px;
+}
+
+.footer-bar {
+  margin-top: 30px;
+  padding: 15px;
+  background: #f3f3f3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buy-btn {
+  background: #8a5cf6;
+  color: #fff;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}

@@ -1,0 +1,93 @@
+.sr-container {
+         position: absolute;
+  top: 10%;
+  left: 8%;
+  width: 90%;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #fff;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #888;
+  margin-left: 10px;
+}
+
+.sr-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.search-box input {
+  border: none;
+  margin-left: 8px;
+  outline: none;
+}
+
+.action-buttons button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.sr-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.sr-table th, .sr-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  padding: 30px;
+}
+
+.sr-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #666;
+}
+
+.sr-footer select {
+  margin-left: 5px;
+}
+
+.footer {
+  margin-top: 30px;
+  padding: 15px;
+  background: #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #333;
+}
+
+.footer-logo {
+  background: purple;
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  font-weight: bold;
+}

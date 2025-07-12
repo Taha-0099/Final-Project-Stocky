@@ -1,0 +1,124 @@
+.pl-container {
+    position: absolute;
+    left: 9%;
+    top: 10%;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f9f9f9;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #777;
+  margin-left: 10px;
+}
+
+.pl-field {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pl-field label {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.pl-field select,
+.pl-field input[type="text"] {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #f3f3f3;
+  padding: 10px;
+  border-radius: 6px;
+  gap: 10px;
+}
+
+.barcode-icon {
+  font-size: 20px;
+  color: #c0392b;
+}
+
+.pl-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.pl-table th,
+.pl-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.no-data {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.pl-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.btn {
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn.purple {
+  background-color: #9b59b6;
+}
+
+.btn.red {
+  background-color: #e74c3c;
+}
+
+.btn.dark {
+  background-color: #2c3e50;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background: #e7eaf1;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.footer-logo {
+  width: 35px;
+  height: 35px;
+  background-color: purple;
+  color: white;
+  text-align: center;
+  line-height: 35px;
+  border-radius: 50%;
+  font-weight: bold;
+}

@@ -1,0 +1,201 @@
+.company-container {
+        position: absolute;
+    top: 10%;
+    left: 8%;
+    width: 90%;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #fff;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #888;
+  margin-left: 10px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.search-box input {
+  border: none;
+  margin-left: 8px;
+  outline: none;
+}
+
+.create-btn {
+  background-color: #a259ff;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.company-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.company-table th,
+.company-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 14px;
+}
+
+.actions .edit-icon {
+  color: green;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.actions .delete-icon {
+  color: red;
+  cursor: pointer;
+}
+
+.footer-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.footer-info select {
+  margin-left: 5px;
+}
+
+.footer {
+  margin-top: 30px;
+  padding: 15px;
+  background: #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #333;
+}
+
+.footer-logo {
+  background: purple;
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  font-weight: bold;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(46, 42, 65, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+}
+
+/* Modal box */
+.modal-box {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  min-width: 700px;
+  max-width: 90vw;
+  padding: 32px 24px 24px 24px;
+  position: relative;
+  animation: fadeIn .3s;
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+
+/* Close icon */
+.close-icon {
+  cursor: pointer;
+  color: #B2B2C6;
+  font-size: 1.3rem;
+  transition: color .2s;
+}
+.close-icon:hover {
+  color: #9B59B6;
+}
+
+/* Form layout */
+.modal-form .modal-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.modal-form .modal-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-form label {
+  margin-bottom: 7px;
+  font-size: 1rem;
+  color: #6C6C80;
+  font-weight: 500;
+}
+
+.modal-form input {
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1.2px solid #e4e3ed;
+  border-radius: 6px;
+  background: #f7f8fa;
+  transition: border-color .2s;
+  outline: none;
+}
+
+.modal-form input:focus {
+  border-color: #9B59B6;
+  background: #fff;
+}
+
+/* Submit button */
+.modal-submit {
+  margin-top: 10px;
+  background: #9B59B6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background .2s;
+}
+.modal-submit:hover {
+  background: #7C41A8;
+}

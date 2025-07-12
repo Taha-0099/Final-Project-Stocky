@@ -1,0 +1,217 @@
+:root {
+  --sidebar-width: 210px;
+  --header-height: 80px;
+  --container-padding: 32px;
+}
+
+/* Main page container: aligns with other pages */
+.pd-container {
+  font-family: 'Inter', Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin-top: var(--header-height);
+  margin-left:10%;
+  padding: var(--container-padding) var(--container-padding) 0 var(--container-padding);
+  min-width: 0;
+  min-height: calc(100vh - var(--header-height));
+  box-sizing: border-box;
+}
+
+.pd-container h2 {
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: #212121;
+  letter-spacing: 0.4px;
+  margin-bottom: 0.5rem;
+}
+
+.pd-breadcrumb {
+  font-size: 1rem;
+  color: #878787;
+  margin-left: 18px;
+  font-weight: 400;
+}
+
+.print-btn {
+  background: #fff;
+  border: 1.5px solid #9b5df7;
+  color: #9b5df7;
+  padding: 10px 22px;
+  border-radius: 9px;
+  cursor: pointer;
+  margin: 16px 0 14px 0;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.16s, color 0.16s;
+  box-shadow: 0 1px 3px rgba(133,99,255,0.06);
+}
+.print-btn:hover {
+  background: #9b5df7;
+  color: #fff;
+}
+
+/* Details Card Content */
+.pd-content {
+  display: flex;
+  gap: 38px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px 0 rgba(133,99,255,0.09);
+  padding: 38px 36px 32px 36px;
+}
+
+.pd-left {
+  flex: 2 1 300px;
+  min-width: 300px;
+}
+
+.pd-right {
+  flex: 1 1 260px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 180px;
+}
+
+.barcode-box {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.barcode-box img {
+  width: 184px;
+  height: 54px;
+  object-fit: contain;
+  margin-bottom: 6px;
+}
+.barcode-box p {
+  font-size: 1.06rem;
+  color: #222;
+  letter-spacing: 1.2px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #fafaff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(133,99,255,0.05);
+}
+
+.info-table td {
+  padding: 10px 13px;
+  border-bottom: 1px solid #eee;
+  font-size: 15.2px;
+}
+
+.info-table td:first-child {
+  font-weight: 600;
+  width: 170px;
+  background-color: #f7f3ff;
+  color: #7c4bb8;
+  letter-spacing: 0.2px;
+}
+
+.info-table tr:last-child td {
+  border-bottom: none;
+}
+
+.product-img {
+  width: 185px;
+  height: 185px;
+  border-radius: 15px;
+  background: #fafaff;
+  box-shadow: 0 1px 8px 0 rgba(133,99,255,0.09);
+  object-fit: cover;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Warehouse Section */
+h3 {
+  margin-top: 38px;
+  font-size: 1.15rem;
+  color: #8252e0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.warehouse-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 1px 6px rgba(133,99,255,0.06);
+  overflow: hidden;
+}
+
+.warehouse-table th,
+.warehouse-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #ece7fa;
+  text-align: left;
+  font-size: 15.3px;
+}
+
+.warehouse-table th {
+  background-color: #f6f1fa;
+  color: #8e5ce3;
+  font-weight: 700;
+}
+
+.warehouse-table tr:last-child td {
+  border-bottom: none;
+}
+
+.pd-loading {
+  margin-left: calc(var(--sidebar-width) + 50px);
+  margin-top: 120px;
+  font-size: 1.6rem;
+  color: #8d7ca4;
+}
+
+/* Responsive tweaks */
+@media (max-width: 1100px) {
+  .pd-content { flex-direction: column; padding: 24px 12px; }
+  .pd-right {
+    justify-content: center !important;
+    margin: 18px 0 0 0;
+  }
+  .product-img { margin: 0 auto; }
+}
+@media (max-width: 700px) {
+  .pd-container { padding: 18px 2vw 0 2vw; }
+  .pd-content { padding: 14px 5px; }
+}
+
+/* Footer styles */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 24px;
+  background: #f3f0fa;
+  margin-top: 24px;
+  font-size: 14px;
+  border-radius: 11px;
+  color: #8e8e9c;
+  box-shadow: 0 1px 3px rgba(133,99,255,0.07);
+}
+.footer-logo {
+  width: 40px;
+  height: 40px;
+  background: #9b5df7;
+  color: #fff;
+  border-radius: 50%;
+  font-weight: bold;
+  text-align: center;
+  line-height: 40px;
+  font-size: 1.7rem;
+  box-shadow: 0 1px 3px rgba(133,99,255,0.13);
+}

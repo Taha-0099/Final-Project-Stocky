@@ -1,0 +1,134 @@
+.profile-page {
+  width: 90%;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  position: absolute;
+  left: 8%;
+  top: 1%;
+}
+.profile-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+.profile-title h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  color: #333;
+  display: inline-block;
+}
+.profile-title nav {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: 14px;
+  color: #555;
+}
+.profile-title nav a {
+  color: #555;
+  text-decoration: none;
+  margin: 0 8px;
+}
+.profile-title nav span {
+  color: #888;
+}
+.profile-cog {
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+}
+.pp-container {
+  background: white;
+  padding-bottom: 40px;
+}
+.pp-banner {
+  width: 100%;
+  height: 200px;
+  background-image: url('data:image/jpeg;base64,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' ) center/cover no-repeat;
+}
+.pp-avatar {
+  width: 100px;
+  height: 100px;
+  background: white;
+  border-radius: 50%;
+  margin: -50px auto 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: #999;
+  border: 3px solid #fff;
+}
+.pp-title {
+  text-align: center;
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 24px;
+}
+.pp-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+}
+.field label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+}
+.field input[type="file"] {
+  padding: 4px;
+}
+.field input,
+.input-icon input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.input-icon {
+  position: relative;
+}
+.input-icon svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+.input-icon input {
+  padding-left: 36px;
+}
+.full-width {
+  grid-column: 1 / span 2;
+}
+.pp-submit {
+  grid-column: 1 / span 2;
+  background: #7c53c3;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 16px;
+}
+.pp-submit svg {
+  margin-right: 8px;
+}
+.pp-submit:hover {
+  background: #6a44a3;
+}

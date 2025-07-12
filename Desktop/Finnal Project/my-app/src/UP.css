@@ -1,0 +1,87 @@
+.up-container {
+    position: absolute;
+    top: 10%;
+    width: 90%;
+    left: 9%;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f9f9f9;
+  color: #333;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #777;
+  margin-left: 10px;
+}
+
+.up-form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.up-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.up-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.up-field label {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.up-field input,
+.up-field select,
+.up-field textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.up-field textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.barcode-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.barcode-input input {
+  flex: 1;
+}
+
+.up-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.submit-btn {
+  background-color: #9b5df7;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #8148e0;
+}

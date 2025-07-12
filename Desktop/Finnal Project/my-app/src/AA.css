@@ -1,0 +1,129 @@
+.aa-container {
+    position: absolute;
+    top: 10%;
+    left: 9%;
+    width: 90%;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.aa-title {
+  margin-bottom: 20px;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #777;
+  margin-left: 10px;
+}
+
+.aa-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.aa-search {
+  position: relative;
+  width: 250px;
+}
+
+.aa-search input {
+  padding: 8px 12px 8px 32px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  top: 9px;
+  left: 10px;
+  color: #888;
+}
+
+.aa-actions button {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-left: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.create-btn {
+  background-color: #55186d;
+  color: rgb(166, 40, 216);
+  border: none;
+}
+
+.aa-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.aa-table th, .aa-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  text-align: left;
+}
+
+.action-icons .export {
+  color: #9b59b6;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.action-icons .view {
+  color: #2c3e50;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.action-icons .edit {
+  color: #27ae60;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.action-icons .delete {
+  color: #e74c3c;
+  cursor: pointer;
+}
+
+.aa-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background: #e7eaf1;
+  font-size: 12px;
+  border-radius: 6px;
+  margin-top: 30px;
+}
+
+.footer-logo {
+  width: 35px;
+  height: 35px;
+  background-color: purple;
+  color: white;
+  text-align: center;
+  line-height: 35px;
+  border-radius: 50%;
+  font-weight: bold;
+}

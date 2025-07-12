@@ -1,0 +1,142 @@
+:root {
+  --sidebar-width: 210px;
+  --header-height: 80px;
+}
+
+/* Sidebar main */
+.sidebar {
+    width: var(--sidebar-width);
+    background: #fff;
+    border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    height: calc(100vh - var(--header-height));
+    min-height: 500px;
+    overflow-y: auto;
+    padding-top: 22px;
+    z-index: 11;
+        position: absolute;
+    top: 38%;
+    box-shadow: 1px 0 6px rgba(133,99,255,0.03);
+}
+
+/* Sidebar item styling */
+.sidebar-item {
+  width: 95%;
+  text-align: center;
+  margin-bottom: 7px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  color: #9b5df7;
+}
+
+.sidebar-item.active,
+.sidebar-item > a.active {
+  background: #f3eaff;
+  color: #8639c8;
+  font-weight: 600;
+}
+
+/* Sidebar item link */
+.sidebar-item > a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  color: #9b5df7;
+  text-decoration: none;
+  padding: 14px 0 7px 0;
+  transition: color 0.2s, background 0.2s;
+  font-weight: 500;
+}
+
+.sidebar-item > a:hover {
+  color: #7538bc;
+  background: #f7f1fe;
+  border-radius: 8px;
+}
+
+/* Sidebar icons styling */
+.sidebar-item svg,
+.sidebar-item .nooi {
+  font-size: 23px !important;
+  color: #9b5df7;
+  margin-bottom: 3px;
+  transition: color 0.2s;
+}
+
+.sidebar-item > a:hover svg,
+.sidebar-item > a:hover .nooi {
+  color: #7538bc;
+}
+
+/* Text under icon */
+.sidetext {
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 0px;
+}
+
+/* Dropdown styling */
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s cubic-bezier(.4,0,.2,1);
+  background-color: #fff;
+  border-top: 1px solid #eee;
+  margin-top: 5px;
+}
+
+.sidebar-item:hover .dropdown {
+  max-height: 320px; /* adjust as needed */
+}
+
+.dropdown a {
+  padding: 8px 24px;
+  text-align: left;
+  color: #8658a9;
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+  background: none;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: transform 0.18s, opacity 0.19s;
+}
+
+.sidebar-item:hover .dropdown a {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown a:hover {
+  background-color: #f3eaff;
+  color: #7538bc;
+  border-radius: 7px;
+}
+
+.nooi:hover {
+  background-color: #f0f0f0;
+  color: #7538bc;
+  border-radius: 7px;
+}
+
+/* Hide horizontal scroll */
+body, html {
+  overflow-x: hidden;
+}
+
+@media (max-width: 1400px) {
+  .sidebar { width: 175px; }
+  .sidetext { font-size: 13px; }
+}
+@media (max-width: 1200px) {
+  .sidebar { width: 150px; }
+  .sidetext { font-size: 12px; }
+}

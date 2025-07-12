@@ -1,0 +1,117 @@
+.subscription-container {
+       position: absolute;
+  top: 10%;
+  left: 8%;
+  width: 90%;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.breadcrumb {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.automation-box {
+  background: #e7f0ff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.automation-box h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.automation-step {
+  margin: 15px 0;
+}
+
+.automation-step pre {
+  background: #f4f4f4;
+  padding: 8px;
+  border-radius: 5px;
+  color: #c7254e;
+}
+
+.note {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #223c80;
+}
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f5f5;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.create-btn {
+  background: #8a5cf6;
+  color: #fff;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.subscription-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 15px;
+}
+
+.subscription-table th,
+.subscription-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.no-data {
+  text-align: center;
+  color: gray;
+  padding: 20px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: gray;
+}
+
+.footer-bar {
+  margin-top: 30px;
+  padding: 15px;
+  background: #f3f3f3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buy-btn {
+  background: #8a5cf6;
+  color: #fff;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}

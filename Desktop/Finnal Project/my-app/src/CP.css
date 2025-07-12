@@ -1,0 +1,162 @@
+:root {
+  --sidebar-width: 210px;
+  --header-height: 70px;
+  --container-padding: 32px;
+}
+
+/* Main container for Create Product */
+.cp-container {
+  font-family: 'Inter', Arial, sans-serif;
+  background: #f8f9fa;
+  margin-top: var(--header-height);
+  margin-left: var(--sidebar-width);
+  padding: var(--container-padding) var(--container-padding) 0 var(--container-padding);
+  min-width: 0;
+  min-height: calc(100vh - var(--header-height));
+  box-sizing: border-box;
+}
+
+.cp-container h2 {
+  font-size: 2.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #212121;
+  letter-spacing: 0.4px;
+  display: flex;
+  align-items: center;
+  margin-left: 0; /* remove this if you had it */
+}
+
+.cp-form {
+  max-width: 1050px;
+  background: #fff;
+  border-radius: 18px;
+  margin-top: 38px;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 36px 40px 32px 40px;
+  box-shadow: 0 4px 20px 0 rgba(133, 99, 255, 0.11);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.cp-breadcrumb {
+  font-size: 1rem;
+  color: #878787;
+  margin-left: 18px;
+  font-weight: 400;
+}
+
+/* FORM CARD */
+
+.cp-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 38px;
+  margin-bottom: 14px;
+}
+
+.cp-field {
+  flex: 1 1 260px;
+  min-width: 230px;
+  max-width: 370px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cp-field label {
+  font-size: 15.5px;
+  color: #333;
+  margin-bottom: 2px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.cp-field input,
+.cp-field select,
+.cp-field textarea {
+  padding: 11px 15px;
+  border: 1.4px solid #e5dfff;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #fafaff;
+  resize: none;
+  transition: border 0.2s;
+}
+.cp-field input:focus,
+.cp-field select:focus,
+.cp-field textarea:focus {
+  outline: none;
+  border-color: #9b5df7;
+  background: #fff;
+}
+
+.cp-field textarea {
+  min-height: 44px;
+  max-height: 120px;
+}
+
+/* Checkboxes section */
+.cp-section.cp-checkboxes {
+  display: flex;
+  gap: 38px;
+  margin-top: 20px;
+  margin-bottom: 6px;
+}
+
+.cp-checkboxes label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #6946a5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.cp-checkboxes input[type="checkbox"] {
+  width: 19px;
+  height: 19px;
+  accent-color: #9b5df7;
+}
+
+/* Section headings (Warranty & Guarantee, Opening Stock) */
+.cp-form h4 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 24px 0 4px 0;
+  color: #874de5;
+}
+
+/* Submit Button */
+.submit-btn {
+  margin-top: 22px;
+  align-self: flex-end;
+  background: #9b5df7;
+  color: #fff;
+  border: none;
+  font-size: 17px;
+  font-weight: 600;
+  border-radius: 11px;
+  padding: 12px 40px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 1px 7px 0 rgba(133,99,255,0.10);
+  transition: background 0.2s;
+}
+.submit-btn:hover {
+  background: #7e46db;
+}
+
+/* Responsive: shrink form on smaller screens */
+@media (max-width: 1350px) {
+  .cp-form { max-width: 98vw; padding: 22px 10px; }
+  .cp-row { gap: 18px; }
+}
+@media (max-width: 900px) {
+  .cp-row { flex-direction: column; gap: 0px; }
+  .cp-field { min-width: 100%; max-width: 100%; }
+}

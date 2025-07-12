@@ -1,0 +1,112 @@
+.units-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  width: 90%;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: gray;
+  margin-left: 10px;
+}
+
+.units-toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  padding: 6px 10px 6px 30px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: gray;
+}
+
+.create-btn {
+  background-color: #a259ff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  background-color: #883de2;
+}
+
+.units-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.units-table th, .units-table td {
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+  text-align: left;
+}
+
+.action-icons .edit {
+  color: green;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.action-icons .delete {
+  color: red;
+  cursor: pointer;
+}
+
+.units-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.units-footer select {
+  margin-left: 5px;
+  padding: 3px;
+}
+
+.pagination {
+  color: #555;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.footer-logo {
+  background-color: purple;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  font-weight: bold;
+}
