@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './AddUserForm.css'
 import Sidebar from './SideBar';
+import Header from './Header';
 const AddUserForm = () => {
   const [formData, setFormData] = useState({
     prefix: '',
@@ -70,26 +71,11 @@ const AddUserForm = () => {
 
 
     <>
+
+        <Header/>
+
       <Sidebar />
-      <header className="header">
-        <div className="header-left">
-          <span className="logo">Finnal Project</span>
-          <span className="status-indicator"></span>
-        </div>
-        <div className="header-right">
-          <button className="icon-button">Download</button>
-          <button className="icon-button">Add</button>
-          <button className="icon-button">Export</button>
-          <span className="pos-label">POS</span>
-          <button className="icon-button">Files</button>
-          <span className="date-label">05/05/2025</span>
-          <button className="icon-button">View</button>
-          <div className="user-info">
-            <span className="user-name">Admin</span>
-            <div className="user-avatar">👤</div>
-          </div>
-        </div>
-      </header>
+   
    
     <div className="form-container">
       <h1>Add user</h1>

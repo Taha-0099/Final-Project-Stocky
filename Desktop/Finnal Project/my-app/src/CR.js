@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import './CR.css';
 import { useNavigate } from 'react-router-dom';
@@ -7,19 +8,11 @@ import {
   faBarcode,
   faBars,
   faExpandArrowsAlt,
-  faGlobe,
-  faShoppingCart,
-  faClipboardList,
-  faChartBar,
-  faBoxes,
-  faExchangeAlt,
-  faFileInvoice,
-  faArrowRight,
-  faArrowLeft,
-  faCog
+  faGlobe
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
 import SideBar from './SideBar';
+import Swal from 'sweetalert2';
 
 const CR = () => {
   const [form, setForm] = useState({
@@ -34,27 +27,48 @@ const CR = () => {
     note: ''
   });
 
-  // Replace baseAmount with real sum of line items
-  const baseAmount = 1000;
+  const [products, setProducts] = useState([]);
+  const [newProduct, setNewProduct] = useState({ name: '', quantity: 1, price: 0 });
+
+  const baseAmount = products.reduce((sum, p) => sum + ((p.price || 0) * (p.quantity || 0)), 0);
   const orderTaxAmount = ((baseAmount - form.discount) * form.orderTax) / 100;
   const grandTotal = baseAmount - form.discount + form.shipping + orderTaxAmount;
 
   const navigate = useNavigate();
 
+  const handleProductAdd = () => {
+    if (!newProduct.name || !newProduct.quantity) return;
+    setProducts([...products, { ...newProduct }]);
+    setNewProduct({ name: '', quantity: 1, price: 0 });
+  };
+
+  const handleProductRemove = idx => {
+    setProducts(products.filter((_, i) => i !== idx));
+  };
+
   const handleSubmit = async () => {
     if (!form.customer || !form.warehouse) {
-      alert('Please select both customer and warehouse');
+      Swal.fire('Error', 'Please select both customer and warehouse', 'error');
+      return;
+    }
+    if (!products.length) {
+      Swal.fire('Error', 'Add at least one product', 'error');
       return;
     }
     try {
       await axios.post('http://localhost:5001/Sales', {
         ...form,
-        total: grandTotal
+        total: grandTotal,
+        paid: form.paymentStatus === 'Paid' ? grandTotal : 0,
+        ref: 'S-' + Date.now(),
+        products
       });
-      navigate('/AS');
+      Swal.fire('Success', 'Sale created successfully!', 'success').then(() => {
+        navigate('/AS');
+      });
     } catch (err) {
       console.error('Create sale failed:', err);
-      alert('Failed to create sale. See console for details.');
+      Swal.fire('Error', 'Failed to create sale. See console for details.', 'error');
     }
   };
 
@@ -117,10 +131,33 @@ const CR = () => {
         </div>
 
         <div className="product-search">
-          <label>Product</label>
-          <div className="search-input">
+          <label>Add Product</label>
+          <div className="search-input" style={{ display: 'flex', gap: 8 }}>
             <FontAwesomeIcon icon={faBarcode} className="barcode-icon" />
-            <input type="text" placeholder="Scan/Search Product by Code Or Name" />
+            <input
+              type="text"
+              placeholder="Product Name"
+              value={newProduct.name}
+              onChange={e => setNewProduct({ ...newProduct, name: e.target.value })}
+              style={{ width: 140 }}
+            />
+            <input
+              type="number"
+              placeholder="Qty"
+              min="1"
+              value={newProduct.quantity}
+              onChange={e => setNewProduct({ ...newProduct, quantity: parseInt(e.target.value) || 1 })}
+              style={{ width: 60 }}
+            />
+            <input
+              type="number"
+              placeholder="Price"
+              min="0"
+              value={newProduct.price}
+              onChange={e => setNewProduct({ ...newProduct, price: parseFloat(e.target.value) || 0 })}
+              style={{ width: 80 }}
+            />
+            <button type="button" onClick={handleProductAdd}>Add</button>
           </div>
         </div>
 
@@ -130,16 +167,27 @@ const CR = () => {
               <tr>
                 <th>#</th>
                 <th>Product</th>
-                <th>Net Unit Price</th>
-                <th>Stock</th>
+                <th>Unit Price</th>
                 <th>Qty</th>
-                <th>Discount</th>
-                <th>Tax</th>
                 <th>Subtotal</th>
+                <th>Remove</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td colSpan="8" className="no-data">No data Available</td></tr>
+              {products.length === 0 ? (
+                <tr><td colSpan="6" className="no-data">No products added</td></tr>
+              ) : products.map((p, idx) => (
+                <tr key={idx}>
+                  <td>{idx + 1}</td>
+                  <td>{p.name}</td>
+                  <td>${p.price}</td>
+                  <td>{p.quantity}</td>
+                  <td>${(p.price * p.quantity).toFixed(2)}</td>
+                  <td>
+                    <button type="button" onClick={() => handleProductRemove(idx)}>Remove</button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -210,7 +258,6 @@ const CR = () => {
             placeholder="A few words ..."
           />
         </div>
-
         <button className="submit-btn" onClick={handleSubmit}>Submit</button>
       </div>
     </>
@@ -218,3 +265,5 @@ const CR = () => {
 };
 
 export default CR;
+
+

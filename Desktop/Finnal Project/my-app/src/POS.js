@@ -18,6 +18,15 @@ import {
 import SideBar from './SideBar';
 import './POS.css';
 import './SidebarDrawer.css';
+import Swal from 'sweetalert2';
+
+// Add this list at the top:
+const RECENT_CUSTOMERS = [
+  'walk-in-customer',
+  'taha',
+  'safi',
+  'awais'
+];
 
 const POS = () => {
   const [customer, setCustomer] = useState('walk-in-customer');
@@ -34,6 +43,10 @@ const POS = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // For custom customer modal:
+  const [customCustomerModal, setCustomCustomerModal] = useState(false);
+  const [customCustomerName, setCustomCustomerName] = useState('');
 
   useEffect(() => {
     setLoading(true);
@@ -132,6 +145,37 @@ const POS = () => {
     setShipping(0);
   };
 
+  // ---------- Function to save sale ----------
+  const saveSale = async (paymentInfo) => {
+    const products = cartItems.map(item => ({
+      name: item.name,
+      quantity: item.quantity,
+      price: getProductPrice(item)
+    }));
+
+    const saleData = {
+      date: new Date().toISOString(),
+      customer: customer || 'walk-in-customer',
+      warehouse,
+      status: 'completed',
+      note: paymentInfo.saleNotes || '',
+      total: Number(calculatePayable()),
+      paid: Number(calculatePayable()),
+      ref: 'S-' + Date.now(),
+      products
+    };
+
+    try {
+      await axios.post('http://localhost:5001/Sales', saleData);
+      resetForm();
+      setShowPaymentModal(false);
+      Swal.fire('Success', 'Sale created successfully!', 'success');
+    } catch (err) {
+      Swal.fire('Error', 'Failed to create sale. See console.', 'error');
+      console.error(err);
+    }
+  };
+
   // --- Sidebar Drawer Render ---
   return (
     <div className="pos-container">
@@ -175,9 +219,25 @@ const POS = () => {
         {/* CART SECTION */}
         <section className="pos-cart-section">
           <div className="customer-info">
+            {/* CUSTOMER SELECT FIELD */}
             <div className="info-field">
               <FontAwesomeIcon icon={faUser} />
-              <input value={customer} onChange={e => setCustomer(e.target.value)} />
+              <select
+                value={RECENT_CUSTOMERS.includes(customer) ? customer : 'other'}
+                onChange={e => {
+                  if (e.target.value === 'other') {
+                    setCustomCustomerModal(true);
+                  } else {
+                    setCustomer(e.target.value);
+                  }
+                }}
+                style={{ flex: 1, marginRight: 6 }}
+              >
+                {RECENT_CUSTOMERS.map(cust => (
+                  <option value={cust} key={cust}>{cust}</option>
+                ))}
+                <option value="other">Other (Custom)...</option>
+              </select>
               <button className="clear-btn" onClick={() => setCustomer('')}>&times;</button>
             </div>
             <div className="info-field">
@@ -422,19 +482,76 @@ const POS = () => {
           total={calculatePayable()} 
           customer={customer}
           cartItems={cartItems}
-          onConfirm={() => {
-            resetForm(); 
-            setShowPaymentModal(false);
-            alert('Payment processed successfully!');
-          }} 
+          onConfirm={(paymentInfo) => saveSale(paymentInfo)}
           onClose={() => setShowPaymentModal(false)}
         />
-      )}  
+      )}
+
+      {/* --- Custom Customer Name Modal --- */}
+      {customCustomerModal && (
+        <div className="modal-overlay" style={{
+          position: 'fixed', left: 0, top: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.35)', zIndex: 1000, display: 'flex',
+          alignItems: 'center', justifyContent: 'center'
+        }}>
+          <div style={{
+            background: '#fff', padding: 32, borderRadius: 12,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.15)', minWidth: 320
+          }}>
+            <h3 style={{ margin: 0, fontWeight: 600 }}>Enter Customer Name</h3>
+            <input
+              type="text"
+              autoFocus
+              value={customCustomerName}
+              onChange={e => setCustomCustomerName(e.target.value)}
+              style={{ width: '100%', fontSize: 16, margin: '16px 0 12px 0', padding: 8, borderRadius: 6, border: '1px solid #aaa' }}
+              placeholder="Type customer name..."
+              onKeyDown={e => {
+                if (e.key === 'Enter' && customCustomerName.trim()) {
+                  setCustomer(customCustomerName.trim());
+                  setCustomCustomerModal(false);
+                  setCustomCustomerName('');
+                }
+              }}
+            />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+              <button
+                onClick={() => {
+                  setCustomCustomerModal(false);
+                  setCustomCustomerName('');
+                }}
+                style={{ padding: '6px 16px', background: '#eee', border: 'none', borderRadius: 6, cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+              <button
+                disabled={!customCustomerName.trim()}
+                onClick={() => {
+                  setCustomer(customCustomerName.trim());
+                  setCustomCustomerModal(false);
+                  setCustomCustomerName('');
+                }}
+                style={{
+                  padding: '6px 16px',
+                  background: '#7c53c3',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: customCustomerName.trim() ? 'pointer' : 'not-allowed'
+                }}
+              >
+                Select
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-// ENHANCED PAYMENT MODAL COMPONENT (matching screenshot)
+// EnhancedPaymentModal stays the same as your code.
+
 function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }) {
   const [payingAmount, setPayingAmount] = useState(total);
   const [paymentMethod, setPaymentMethod] = useState('Cash');
@@ -667,7 +784,7 @@ function EnhancedPaymentModal({ total, customer, cartItems, onConfirm, onClose }
         <div className="enhanced-pm-footer">
           <button 
             className="pay-button" 
-            onClick={onConfirm}
+            onClick={() => onConfirm({ saleNotes, paymentNotes, paymentMethod })}
             disabled={totalPaying < parseFloat(total)}
           >
             Pay

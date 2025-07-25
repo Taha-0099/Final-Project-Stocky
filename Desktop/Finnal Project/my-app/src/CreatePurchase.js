@@ -35,7 +35,7 @@ const CreatePurchase = () => {
   });
 
   // Base amount placeholder; replace with actual calculation as needed
-  const baseAmount = 1000;
+  const baseAmount = 0;
   const taxAmount = ((baseAmount - form.discount) * form.orderTax) / 100;
   const grandTotal = baseAmount - form.discount + form.shipping - taxAmount;
 

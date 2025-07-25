@@ -1,0 +1,394 @@
+/* Main Container - Fixed responsive layout */
+.cs-container {
+  margin-left: 140px; /* Sidebar width */
+  margin-top: 80px; /* Header height */
+  padding: 20px;
+  min-height: calc(100vh - 80px);
+  background-color: #f8f9fa;
+  box-sizing: border-box;
+  width: calc(100% - 240px);
+}
+
+.cs-content {
+  max-width: 100%;
+  background-color: #f8f9fa;
+}
+
+/* Header Section */
+.cs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.cs-header h2 {
+  font-size: 24px;
+  margin: 0;
+  color: #333;
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #6c757d;
+  margin-left: auto;
+}
+
+/* Table Wrapper */
+.cs-table-wrapper {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+/* Toolbar */
+.cs-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: #6c757d;
+  z-index: 1;
+}
+
+.cs-search {
+  padding: 8px 8px 8px 35px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex-grow: 1;
+  font-size: 14px;
+  outline: none;
+}
+
+.cs-search:focus {
+  border-color: #8e44ad;
+}
+
+.count-btn {
+  background-color: #8e44ad;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 0.3s;
+}
+
+.count-btn:hover {
+  background-color: #732d91;
+}
+
+/* Table Container for Horizontal Scroll */
+.table-container {
+  overflow-x: auto;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.cs-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Minimum width to prevent squashing */
+}
+
+.cs-table th {
+  background-color: #f8f9fa;
+  padding: 12px 15px;
+  border-bottom: 2px solid #dee2e6;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  white-space: nowrap;
+}
+
+.cs-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #dee2e6;
+  text-align: left;
+  color: #495057;
+}
+
+.cs-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.download-link {
+  color: #8e44ad;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.download-link:hover {
+  color: #732d91;
+  text-decoration: underline;
+}
+
+.no-data {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 30px;
+}
+
+/* Pagination */
+.cs-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  color: #6c757d;
+  font-size: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.pagination-controls span {
+  color: #8e44ad;
+}
+
+.pagination-controls span:hover {
+  color: #732d91;
+}
+
+/* Footer */
+.cs-footer {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #e9ecef;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.5;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #6c757d;
+  padding: 5px;
+  border-radius: 3px;
+  transition: color 0.3s;
+}
+
+.modal-close:hover {
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+.modal-form {
+  padding: 25px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #495057;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+  background-color: #fff;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #8e44ad;
+  box-shadow: 0 0 0 2px rgba(142, 68, 173, 0.2);
+}
+
+.form-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  appearance: none;
+  padding-right: 40px;
+}
+
+.modal-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-btn {
+  background-color: #8e44ad;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #732d91;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cs-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+  }
+  
+  .cs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .breadcrumb {
+    margin-left: 0;
+  }
+  
+  .cs-table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    min-width: auto;
+  }
+  
+  .count-btn {
+    align-self: flex-end;
+  }
+  
+  .cs-pagination {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .modal-container {
+    margin: 10px;
+    max-width: none;
+  }
+  
+  .modal-form {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cs-container {
+    padding: 10px;
+  }
+  
+  .cs-table-wrapper {
+    padding: 15px;
+  }
+  
+  .modal-header {
+    padding: 15px 20px;
+  }
+  
+  .modal-form {
+    padding: 15px;
+  }
+}

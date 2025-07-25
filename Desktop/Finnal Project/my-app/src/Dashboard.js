@@ -1,4 +1,3 @@
-// src/components/Dashboard.js
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,6 +33,7 @@ const Dashboard = () => {
   const [topProducts, setTopProducts] = useState([]);
   const [paymentSalesData, setPaymentSalesData] = useState([]);
   const [topCustomers, setTopCustomers] = useState([]);
+  const [recentSales, setRecentSales] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +41,7 @@ const Dashboard = () => {
         const salesRes = await axios.get('http://localhost:5001/Sales');
         const purchasesRes = await axios.get('http://localhost:5001/Purchases');
 
+        // Calculate summary
         setSummary({
           sales: salesRes.data.reduce((sum, sale) => sum + (sale.total || 0), 0),
           purchases: purchasesRes.data.reduce((sum, purchase) => sum + (purchase.total || 0), 0),
@@ -48,13 +49,50 @@ const Dashboard = () => {
           purchaseReturn: 0
         });
 
-        setWeekly(salesRes.data.slice(-7).map(sale => ({
-          date: new Date(sale.date).toLocaleDateString(),
-          sales: sale.total || 0,
-          purchases: purchasesRes.data.find(p => new Date(p.date).toLocaleDateString() === new Date(sale.date).toLocaleDateString())?.total || 0
-        })));
+        // Get last 7 sales, newest first
+setRecentSales(
+  salesRes.data
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 7)
+);
 
-        // SAFER aggregation for Top Products (with debug log)
+
+        // Get all unique dates from both sales and purchases
+        const allDatesSet = new Set([
+          ...salesRes.data.map(sale => new Date(sale.date).toLocaleDateString()),
+          ...purchasesRes.data.map(pur => new Date(pur.date).toLocaleDateString())
+        ]);
+        const allDates = Array.from(allDatesSet).sort(
+          (a, b) => new Date(a) - new Date(b)
+        ).slice(-7); // Get the last 7 dates
+
+        // Weekly chart data
+        setWeekly(
+          allDates.map(date => ({
+            date,
+            sales: salesRes.data
+              .filter(sale => new Date(sale.date).toLocaleDateString() === date)
+              .reduce((sum, sale) => sum + (sale.total || 0), 0),
+            purchases: purchasesRes.data
+              .filter(pur => new Date(pur.date).toLocaleDateString() === date)
+              .reduce((sum, pur) => sum + (pur.total || 0), 0)
+          }))
+        );
+
+        // Line chart data
+        setPaymentSalesData(
+          allDates.map(date => ({
+            date,
+            sale: salesRes.data
+              .filter(sale => new Date(sale.date).toLocaleDateString() === date)
+              .reduce((sum, sale) => sum + (sale.total || 0), 0),
+            purchase: purchasesRes.data
+              .filter(pur => new Date(pur.date).toLocaleDateString() === date)
+              .reduce((sum, pur) => sum + (pur.total || 0), 0)
+          }))
+        );
+
+        // Top Sold Products (by quantity)
         const productAggregation = {};
         salesRes.data.forEach(sale => {
           if (Array.isArray(sale.products)) {
@@ -66,25 +104,13 @@ const Dashboard = () => {
             });
           }
         });
-
-        // DEBUG LOG if empty!
-        if (Object.keys(productAggregation).length === 0) {
-          console.warn('No product sales found in Sales data:', salesRes.data);
-        }
-
         const topProductsArr = Object.entries(productAggregation)
           .map(([name, value]) => ({ name, value }))
           .sort((a, b) => b.value - a.value)
           .slice(0, 5);
-
         setTopProducts(topProductsArr);
 
-        setPaymentSalesData(salesRes.data.slice(-7).map(sale => ({
-          date: new Date(sale.date).toLocaleDateString(),
-          sale: sale.total || 0,
-          purchase: purchasesRes.data.find(p => new Date(p.date).toLocaleDateString() === new Date(sale.date).toLocaleDateString())?.total || 0
-        })));
-
+        // Top Customers
         setTopCustomers(salesRes.data.reduce((acc, sale) => {
           if (sale.customer) {
             const existing = acc.find(c => c.name === sale.customer);
@@ -225,6 +251,62 @@ const Dashboard = () => {
           <div className="recent-sales-container">
             <h4>Recent Sales</h4>
             {/* Recent Sales table */}
+            <div className="recent-sales-container">
+  <h4>Recent Sales</h4>
+  <div className="table-container-rs">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Invoice</th>
+          <th>Customer</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {recentSales.length === 0 ? (
+          <tr>
+            <td colSpan="6" style={{ textAlign: 'center', color: '#aaa' }}>No recent sales found.</td>
+          </tr>
+        ) : (
+          recentSales.map((sale, idx) => (
+            <tr key={idx}>
+              <td>{new Date(sale.date).toLocaleDateString()}</td>
+              <td>{sale.invoice || sale._id?.slice(-6)?.toUpperCase()}</td>
+              <td>{sale.customer || 'N/A'}</td>
+              <td>${sale.total?.toFixed(2) ?? '0.00'}</td>
+              <td>
+                <span className={
+                  sale.status === 'Completed'
+                    ? 'status-badge completed'
+                    : sale.status === 'Pending'
+                      ? 'status-badge pending'
+                      : 'status-badge cancelled'
+                }>
+                  {sale.status || 'Completed'}
+                </span>
+              </td>
+              <td>
+                <span className={
+                  sale.paymentStatus === 'Paid'
+                    ? 'payment-status paid'
+                    : sale.paymentStatus === 'Partial'
+                      ? 'payment-status partial'
+                      : 'payment-status unpaid'
+                }>
+                  {sale.paymentStatus || 'Paid'}
+                </span>
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
+
           </div>
         </main>
       </div>

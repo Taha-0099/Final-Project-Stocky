@@ -25,6 +25,7 @@ import {
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
 
 import SideBar from './SideBar';
+import Header from './Header';
 
 const AQ = () => {
   const [quotations, setQuotations] = useState([]);
@@ -37,23 +38,10 @@ const AQ = () => {
 
   return (
     <>
+            <Header/>
+
       <SideBar/>
-   <header className="dashboard-header">
-        <div className="logo-section">
-          <div className="logo">S</div>
-          <FontAwesomeIcon icon={faBars} className="icon" />
-        </div>
-        <div className="header-icons">
-          <button className="pos-btn">POS</button>
-          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
-          <FontAwesomeIcon icon={faGlobe} className="icon" />
-          <div className="notification-icon">
-            <FontAwesomeIcon icon={farBell} className="icon" />
-            <span className="badge">1</span>
-          </div>
-          <div className="brand-name">STOCKY</div>
-        </div>
-      </header>
+
       <div className="aq-container">
         <h2>All Quotations <span className="breadcrumb">Quotations | All Quotations</span></h2>
 

@@ -1,9 +1,8 @@
-// src/Login.js
 import React, { useState } from 'react';
-import { useNavigate }      from 'react-router-dom';
-import axios                from 'axios';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Login.css';
-import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 const API = 'http://localhost:5001/Users';
@@ -11,13 +10,13 @@ const API = 'http://localhost:5001/Users';
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    email:    '',
-    username: '',
+    email: '',
+    name: '',
     password: ''
   });
-  const [error, setError]             = useState('');
+  const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [loading, setLoading]         = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = e => {
@@ -33,19 +32,31 @@ const Login = () => {
 
     try {
       if (isLogin) {
-        // ← match backend POST /Users/login
+        // Login (must send { name, password })
         const { data } = await axios.post(`${API}/login`, {
-          username: formData.username.trim(),
+          name: formData.name.trim(),
           password: formData.password.trim()
         });
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/Dashboard');
+        localStorage.setItem('role', data.user.role);
+
+        // Redirect based on role
+        if (data.user.role && data.user.role.toLowerCase() === 'admin') {
+          navigate('/Dashboard');
+        } else {
+          navigate('/POS');
+        }
       } else {
-        // ← match backend POST /Users/register
+        // Register (must send { name, email, password })
+        if (!formData.email.trim() || !formData.name.trim() || !formData.password.trim()) {
+          setError('All fields are required.');
+          setLoading(false);
+          return;
+        }
         const { data } = await axios.post(`${API}/register`, {
-          email:    formData.email.trim(),
-          username: formData.username.trim(),
+          name: formData.name.trim(),
+          email: formData.email.trim(),
           password: formData.password.trim()
         });
         setSuccessMessage(data.message);
@@ -130,9 +141,9 @@ const Login = () => {
             <FontAwesomeIcon icon={faUser} className="modern-input-icon" />
             <input
               type="text"
-              name="username"
+              name="name"
               placeholder="Username"
-              value={formData.username}
+              value={formData.name}
               onChange={handleChange}
               required
               autoComplete="off"
@@ -159,7 +170,7 @@ const Login = () => {
           >
             {loading
               ? (isLogin ? 'Logging in…' : 'Signing up…')
-              : (isLogin ? 'Login'     : 'Sign Up')}
+              : (isLogin ? 'Login' : 'Sign Up')}
           </button>
         </form>
       </div>

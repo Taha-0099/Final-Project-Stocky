@@ -1,4 +1,3 @@
-// /src/components/AP.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './AP.css';
@@ -19,16 +18,23 @@ import {
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
 import SideBar from './SideBar';
+import Header from './Header';
 
 const AP = () => {
   const [products, setProducts] = useState([]);
+  const [deletingId, setDeletingId] = useState(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = () => {
     axios
       .get('http://localhost:5001/Products')
       .then((res) => setProducts(res.data))
       .catch((err) => console.error('Error fetching products:', err));
-  }, []);
+  };
 
   const getTotalQuantity = (prod) => {
     const q1 = prod.openingStock1 || 0;
@@ -36,26 +42,38 @@ const AP = () => {
     return q1 + q2;
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this product?')) return;
+    setDeletingId(id);
+    try {
+      await axios.delete(`http://localhost:5001/Products/${id}`);
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+    } catch (err) {
+      alert('Failed to delete product. See console for details.');
+      console.error('Delete error:', err);
+    }
+    setDeletingId(null);
+  };
+
+  // FILTER PRODUCTS BY SEARCH BAR
+  const filteredProducts = products.filter((prod) => {
+    const searchStr = search.toLowerCase();
+    return (
+      (prod.name && prod.name.toLowerCase().includes(searchStr)) ||
+      (prod.codeProduct && prod.codeProduct.toLowerCase().includes(searchStr)) ||
+      (prod.brand && prod.brand.toLowerCase().includes(searchStr)) ||
+      (prod.category && prod.category.toLowerCase().includes(searchStr))
+    );
+  });
+
   return (
     <div className="ap-page">
+
+              <Header/>
+
       <SideBar />
 
-      <header className="dashboard-header">
-        <div className="logo-section">
-          <div className="logo">S</div>
-          <FontAwesomeIcon icon={faBars} className="icon" />
-        </div>
-        <div className="header-icons">
-          <button className="pos-btn">POS</button>
-          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
-          <FontAwesomeIcon icon={faGlobe} className="icon" />
-          <div className="notification-icon">
-            <FontAwesomeIcon icon={farBell} className="icon" />
-            <span className="badge">1</span>
-          </div>
-          <div className="brand-name">STOCKY</div>
-        </div>
-      </header>
+
 
       <div className="ap-container">
         <h2>
@@ -63,7 +81,13 @@ const AP = () => {
         </h2>
 
         <div className="ap-toolbar">
-          <input type="text" placeholder="Search this table" className="ap-search" />
+          <input
+            type="text"
+            placeholder="Search this table"
+            className="ap-search"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
           <div className="ap-actions">
             <button>
               <FontAwesomeIcon icon={faFilter} /> Filter
@@ -101,7 +125,7 @@ const AP = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((prod) => (
+            {filteredProducts.map((prod) => (
               <tr key={prod._id}>
                 <td><input type="checkbox" /></td>
                 <td>
@@ -112,22 +136,35 @@ const AP = () => {
                 <td>{prod.codeProduct}</td>
                 <td>{prod.brand}</td>
                 <td>{prod.category}</td>
-                <td>{prod.productCost.toFixed(2)}</td>
-                <td>{prod.productPrice.toFixed(2)}</td>
+                <td>{prod.productCost?.toFixed(2)}</td>
+                <td>{prod.productPrice?.toFixed(2)}</td>
                 <td>{prod.unit}</td>
                 <td>{getTotalQuantity(prod)}</td>
                 <td className="action-icons">
                   <Link to={`/PD/${prod._id}`}>
                     <FontAwesomeIcon icon={faEye} className="view" />
                   </Link>
-                  {/* Edit link wraps the pen icon and passes the product ID */}
                   <Link to={`/UP/${prod._id}`}>
                     <FontAwesomeIcon icon={faPen} className="edit" />
                   </Link>
-                  <FontAwesomeIcon icon={faTimes} className="delete" />
+                  <span
+                    className="delete"
+                    title="Delete"
+                    style={{ cursor: deletingId === prod._id ? 'not-allowed' : 'pointer', color: deletingId === prod._id ? 'gray' : '#e74c3c' }}
+                    onClick={() => deletingId !== prod._id && handleDelete(prod._id)}
+                  >
+                    <FontAwesomeIcon icon={faTimes} spin={deletingId === prod._id} />
+                  </span>
                 </td>
               </tr>
             ))}
+            {filteredProducts.length === 0 && (
+              <tr>
+                <td colSpan="12" style={{ textAlign: 'center', color: '#888' }}>
+                  No products found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
 
@@ -139,7 +176,7 @@ const AP = () => {
             </select>
           </span>
           <span>
-            {`1 - ${products.length} of ${products.length}`}
+            {`1 - ${filteredProducts.length} of ${filteredProducts.length}`}
           </span>
           <span className="pagination">prev | next</span>
         </div>

@@ -28,7 +28,7 @@ const CQ = () => {
     note: ''
   });
 
-  const baseAmount = 1000;
+  const baseAmount = 0;
   const discount = parseFloat(form.discount || 0);
   const orderTax = parseFloat(form.orderTax || 0);
   const shipping = parseFloat(form.shipping || 0);

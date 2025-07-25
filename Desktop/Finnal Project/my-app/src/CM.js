@@ -17,6 +17,7 @@ import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
 import { Link } from 'react-router-dom';
 
 import SideBar from './SideBar';
+import Header from './Header';
 
 const customers = [
   { code: '104', name: 'Fred C. Rasmussen', phone: '040 33 61 47', email: 'Fred@example.com', tax: '', due: '0.00', returnDue: '0.00' },
@@ -30,28 +31,12 @@ const CM = () => {
   return (
 
     <>
-
+ <Header/>
 <SideBar/>
 
 
 
-      <header className="dashboard-header">
-        <div className="logo-section">
-          <div className="logo">S</div>
-          <FontAwesomeIcon icon={faBars} className="icon" />
-        </div>
-        <div className="header-icons">
-          <button className="pos-btn">POS</button>
-          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
-          <FontAwesomeIcon icon={faGlobe} className="icon" />
-          <div className="notification-icon">
-            <FontAwesomeIcon icon={farBell} className="icon" />
-            <span className="badge">1</span>
-          </div>
-          <div className="brand-name">STOCKY</div>
-        </div>
-      </header>
-
+    
     <div className="customer-container">
       <h2>Customer Management</h2>
       <p className="breadcrumb">Customers | Customer Management</p>

@@ -1,59 +1,66 @@
 .user-management-container {
-  padding: 20px;
+  padding: 18px 10px 10px 10px;
   font-family: 'Segoe UI', sans-serif;
-      position: absolute;
-  top: 10%;
-  left: 8%;
-  width: 90%;
+  position: absolute;
+  top: 15%;
+  left: 12%;
+  width: 83vw;   /* smaller for 100% zoom, sidebar space */
+  min-width: 260px;
+  background: #fff;
 }
 
 .breadcrumb {
   color: gray;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  font-size: 14px;
 }
 
 .top-controls {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   background: #f5f5f5;
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  min-width: 180px;
 }
 
 .search-bar input {
   border: none;
   outline: none;
   background: transparent;
+  font-size: 14px;
+  width: 120px;
 }
 
 .action-buttons button {
-  margin-left: 10px;
-  padding: 8px 10px;
-  border-radius: 5px;
+  margin-left: 6px;
+  padding: 5px 10px;
+  border-radius: 4px;
   border: 1px solid #ccc;
   background: white;
   cursor: pointer;
+  font-size: 13px;
+  min-width: 42px;
 }
 
 .action-buttons .pdf {
   color: green;
   border-color: green;
 }
-
 .action-buttons .excel {
   color: red;
   border-color: red;
 }
-
 .action-buttons .create {
   background: #8a5cf6;
   color: white;
@@ -61,32 +68,50 @@
 }
 
 .user-table {
-  width: 100%;
+  width: 70%;
   border-collapse: collapse;
   background: #fff;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
+  table-layout: fixed;
 }
 
 .user-table th,
 .user-table td {
-  padding: 10px 8px;
+  padding: 7px 4px;
   border-bottom: 1px solid #eee;
   text-align: left;
+  font-size: 14px;
+  word-break: break-all;
+  max-width: 60px;
 }
 
-.edit-btn {
+.user-table th {
+  font-weight: 600;
+  font-size: 14px;
+  background: #faf7ff;
+}
+
+.edit-btn, .delete-btn {
   background: none;
   border: none;
-  color: green;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
+  vertical-align: middle;
+  padding: 2px 5px;
+  margin: 0 2px;
 }
+
+.edit-btn { color: #4caf50; }
+.delete-btn { color: #e53935; }
+
+.edit-btn:focus, .delete-btn:focus { outline: none; }
 
 .switch {
   position: relative;
   display: inline-block;
-  width: 36px;
-  height: 20px;
+  width: 28px;
+  height: 16px;
+  vertical-align: middle;
 }
 
 .switch input {
@@ -101,14 +126,14 @@
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: #ccc;
   transition: 0.4s;
-  border-radius: 34px;
+  border-radius: 24px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 14px;
-  width: 14px;
+  height: 10px;
+  width: 10px;
   left: 3px;
   bottom: 3px;
   background-color: white;
@@ -121,7 +146,7 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(16px);
+  transform: translateX(12px);
 }
 
 .footer {
@@ -129,23 +154,171 @@ input:checked + .slider:before {
   justify-content: space-between;
   align-items: center;
   color: gray;
-  margin-top: 10px;
+  margin-top: 6px;
+  font-size: 13px;
 }
 
 .footer-bar {
-  margin-top: 30px;
-  padding: 15px;
+  margin-top: 18px;
+  padding: 8px;
   background: #f3f3f3;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 13px;
 }
 
 .buy-btn {
   background: #8a5cf6;
   color: #fff;
-  padding: 8px 15px;
+  padding: 6px 13px;
   border: none;
-  border-radius: 20px;
+  border-radius: 16px;
   cursor: pointer;
+  font-size: 14px;
+}
+
+/* POPUP styling stays the same */
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(44,44,44,0.18);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+.popup-form {
+  background: #fff;
+  border-radius: 12px;
+  min-width: 390px;
+  max-width: 94vw;
+  padding: 24px 16px;
+  box-shadow: 0 2px 24px rgba(44,44,44,0.12);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.popup-header {
+  font-weight: 600;
+  font-size: 1.13rem;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.close-btn {
+  border: none;
+  background: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.popup-content .row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.popup-content .field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.popup-content label {
+  font-size: .89rem;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+.popup-footer {
+  text-align: right;
+  margin-top: 14px;
+}
+.submit-btn {
+  padding: 7px 18px;
+  background: #8250ea;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.delete-btn:hover {
+  color: #fff !important;
+  background: #e53935 !important;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+
+.user-table-compact {
+  width:140%;
+  min-width: 350px;
+  max-width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  margin-bottom: 12px;
+  table-layout: fixed;
+  position: relative;
+}
+
+.user-table-compact th,
+.user-table-compact td {
+  padding: 5px 4px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 13px;
+  word-break: break-all;
+  max-width: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-table-compact th {
+  font-weight: 600;
+  font-size: 13px;
+  background: #faf7ff;
+}
+
+.user-table-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 2px 3px;
+  margin: 0 1px;
+  min-width: 18px;
+  min-height: 18px;
+}
+
+.user-table-action-btn.edit-btn { color: #4caf50; }
+.user-table-action-btn.delete-btn { color: #e53935; }
+
+.user-table-action-btn:focus { outline: none; }
+
+@media (max-width: 900px) {
+  .user-management-container {
+    left: 0;
+    width: 98vw;
+    padding: 4px;
+  }
+  .user-table-compact {
+    min-width: 300px;
+    overflow-x: auto;
+    display: block;
+  }
+}
+
+
+/* Make table horizontally scrollable on tiny screens */
+@media (max-width: 900px) {
+  .user-management-container {
+    left: 0;
+    width: 100vw;
+    padding: 6px;
+  }
+  .user-table {
+    font-size: 13px;
+    min-width: 320px;
+    overflow-x: auto;
+    display: block;
+  }
 }

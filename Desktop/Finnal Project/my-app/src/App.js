@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthGuard   from './AuthGuard';
 import Login       from './Login';
 import Home        from './Home';
+import Header        from './Header';
 import Dashboard   from './Dashboard';
 import AddUserForm from './AddUserForm';
 import AdminPage   from './AdminPage';
@@ -51,9 +52,14 @@ import ProjectL       from './ProjectL';
 import TL             from './TL';
 import PP             from './PP';
 import AddEmploy      from './AddEmploy';
+import CS      from './CS';
+import SS      from './SS';
+import ProjectList      from './ProjectList';
+import { SettingsProvider } from './SettingsContext';
 
 function App() {
   return (
+       <SettingsProvider>
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         {/* Public */}
@@ -82,6 +88,7 @@ function App() {
         <Route path="/Brand"       element={<AuthGuard><Brand /></AuthGuard>} />
         <Route path="/CA"          element={<AuthGuard><CA /></AuthGuard>} />
         <Route path="/AA"          element={<AuthGuard><AA /></AuthGuard>} />
+        <Route path="/CS"          element={<AuthGuard><CS /></AuthGuard>} />
         <Route path="/Units"       element={<AuthGuard><Units /></AuthGuard>} />
         <Route path="/CQ"          element={<AuthGuard><CQ /></AuthGuard>} />
         <Route path="/AQ"          element={<AuthGuard><AQ /></AuthGuard>} />
@@ -109,11 +116,15 @@ function App() {
         <Route path="/TL"          element={<AuthGuard><TL /></AuthGuard>} />
         <Route path="/add-employee" element={<AuthGuard><AddEmploy /></AuthGuard>} />
         <Route path="/PP"          element={<AuthGuard><PP /></AuthGuard>} />
+        <Route path="/SS"          element={<AuthGuard><SS /></AuthGuard>} />
+        <Route path="/ProjectList"          element={<AuthGuard><ProjectList /></AuthGuard>} />
+        <Route path="/Header"          element={<AuthGuard><Header /></AuthGuard>} />
 
         {/* Catch-all */}
         <Route path="*" element={<div style={{textAlign:'center',marginTop:'5rem'}}>404 - Page Not Found</div>} />
       </Routes>
     </BrowserRouter>
+    </SettingsProvider>
   );
 }
 

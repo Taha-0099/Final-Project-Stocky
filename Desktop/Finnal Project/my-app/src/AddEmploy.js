@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./AddEmploy.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faSearch, faFilter, faFilePdf, faFileExcel, faPlus,
+  faEye, faPen, faTimes, faBars, faExpandArrowsAlt, faGlobe, faCheckCircle
+} from '@fortawesome/free-solid-svg-icons';  // <-- Add faCheckCircle here
+import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
+
 import SideBar from './SideBar';
 import { useNavigate } from "react-router-dom";
+import Header from "./Header";
 
 const AddEmploy = () => {
   const [form, setForm] = useState({
@@ -59,7 +65,12 @@ const AddEmploy = () => {
 
   return (
     <>
+        <Header/>
+
       <SideBar />
+
+   
+
       <div className="ae-wrapper">
         <h2>
           Add Employee{" "}

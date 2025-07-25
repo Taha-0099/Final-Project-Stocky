@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChartBar,
@@ -24,6 +24,9 @@ import { Link } from "react-router-dom";
 import "./SideBar.css";
 
 const SideBar = () => {
+  // To handle dropdown for settings
+  const [settingsDropdown, setSettingsDropdown] = useState(false);
+
   return (
     <nav className="sidebar">
       <div className="sidebar-item">
@@ -47,6 +50,7 @@ const SideBar = () => {
           <Link to="/CP">Creat Product</Link>
           <Link to="/PL">Print Label</Link>
           <Link to="/PD"> Product Details</Link>
+          <Link to="/CS"> Count Stock</Link>
           <Link to="/UP"> Update Product </Link>
           <Link to="/Category">Category </Link>
           <Link to="/Brand">Brands </Link>
@@ -62,6 +66,7 @@ const SideBar = () => {
         <div className="dropdown">
           <Link to="/CA">Create Adjustments </Link>
           <Link to="/AA">All Adjustments</Link>
+          <Link to="/Header">Header</Link>
         </div>
       </div>
 
@@ -114,10 +119,7 @@ const SideBar = () => {
         </Link>
       </div>
 
- 
-
-
-  <div className="sidebar-item">
+      <div className="sidebar-item">
         <Link to="/Ship">
           <FontAwesomeIcon className="nooi" icon={faUniversity} />
           <span className="sidetext">HRM</span>
@@ -134,12 +136,7 @@ const SideBar = () => {
         </div>
       </div>
 
-
-
- 
-
-
-  <div className="sidebar-item">
+      <div className="sidebar-item">
         <Link to="/CT">
           <FontAwesomeIcon className="nooi" icon={faSync} />
           <span className="sidetext">Transfer</span>
@@ -150,23 +147,20 @@ const SideBar = () => {
         </div>
       </div>
 
-
-          
       <div className="sidebar-item">
         <Link to="/LA">
           <FontAwesomeIcon className="nooi" icon={faBook} />
           <span className="sidetext">Accounting</span>
         </Link>
-  <div className="dropdown">
+        <div className="dropdown">
           <Link to="/LA">List Accounts</Link>
-          <Link to="/TM"> Transfer Money</Link>         
+          <Link to="/TM"> Transfer Money</Link>
           <Link to="/CE">  Create Expense </Link>
           <Link to="/AE">  All Expense </Link>
           <Link to="/CD">  Create Deposit </Link>
           <Link to="/LD">  List Deposit </Link>
           <Link to="/DC">   Deposit Category</Link>
         </div>
-
       </div>
 
       <div className="sidebar-item">
@@ -175,26 +169,28 @@ const SideBar = () => {
           <span className="sidetext">Subscription Product</span>
         </Link>
       </div>
+
       <div className="sidebar-item">
         <Link to="/people">
           <FontAwesomeIcon className="nooi" icon={faUsers} />
           <span className="sidetext">People</span>
         </Link>
-
-  <div className="dropdown">
+        <div className="dropdown">
           <Link to="/CM">Customers</Link>
-          <Link to="/CM"> Suppliers</Link>         
+          <Link to="/CM"> Suppliers</Link>
           <Link to="/PU">  Users  </Link>
-      
         </div>
-
       </div>
 
       <div className="sidebar-item">
-        <Link to="/ProjectL">
+        <Link to="/ProjectList">
           <FontAwesomeIcon className="nooi" icon={faFolderOpen} />
           <span className="sidetext">Projects</span>
         </Link>
+         <div className="dropdown">
+          <Link to="/ProjectList">Project List</Link>
+         
+        </div>
       </div>
 
       <div className="sidebar-item">
@@ -202,13 +198,35 @@ const SideBar = () => {
           <FontAwesomeIcon className="nooi" icon={faTasks} />
           <span className="sidetext">Tasks</span>
         </Link>
+
       </div>
 
-      <div className="sidebar-item">
+      {/* Settings Dropdown */}
+      <div
+        className="sidebar-item"
+        onMouseEnter={() => setSettingsDropdown(true)}
+        onMouseLeave={() => setSettingsDropdown(false)}
+        style={{ position: "relative" }}
+      >
         <Link to="/settings">
           <FontAwesomeIcon className="nooi" icon={faCog} />
           <span className="sidetext">Settings</span>
         </Link>
+        <div className={`dropdown settings-dropdown${settingsDropdown ? " show" : ""}`}>
+          <Link to="/SS">System Settings</Link>
+          <Link to="/settings/dynamic_appearance">Dynamic Appearance</Link>
+          <Link to="/settings/languages">Languages</Link>
+          <Link to="/settings/payment_methods">Payment Methods</Link>
+          <Link to="/settings/sms_settings">Sms Settings</Link>
+          <Link to="/settings/sms_templates">SMS Templates</Link>
+          <Link to="/settings/mail_settings">Mail Settings</Link>
+          <Link to="/settings/email_templates">Email Templates</Link>
+          <Link to="/settings/pos_settings">POS Settings</Link>
+          <Link to="/settings/module_settings">Module Settings</Link>
+          <Link to="/settings/upgrade">Upgrade</Link>
+          <Link to="/settings/payment_gateway">Payment Gateway</Link>
+          <Link to="/settings/group_permissions">Group Permissions</Link>
+        </div>
       </div>
 
       <div className="sidebar-item">

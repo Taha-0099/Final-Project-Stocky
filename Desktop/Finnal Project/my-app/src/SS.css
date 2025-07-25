@@ -1,0 +1,240 @@
+.ss-page {
+  background: #f8f9fa;
+  min-height: 100vh;
+  position: absolute;
+  top: 10%;
+  width: 90%;
+  left: 8%;
+  padding: 28px 0 0 0;
+}
+
+.ss-header {
+  padding: 8px 40px 10px 40px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 17px;
+  font-weight: 500;
+  color: #333;
+}
+.ss-header-title {
+  font-weight: 700;
+  margin-right: 12px;
+}
+.ss-header-link {
+  color: #7c3aed;
+  font-size: 15px;
+  margin-left: 8px;
+}
+.ss-header-divider {
+  color: #aaa;
+  margin: 0 3px;
+}
+.ss-header-breadcrumb {
+  color: #555;
+  font-size: 15px;
+}
+
+.ss-header-icon {
+  color: #9c7ae8;
+  font-size: 21px;
+}
+
+.ss-card {
+  background: #fff;
+  margin: 24px auto 18px auto;
+  max-width: 100%;
+  width: 90%;
+  border-radius: 10px;
+  padding: 27px 24px 24px 24px;
+  box-shadow: 0 2px 8px rgba(180, 162, 255, 0.09);
+  border: 1px solid #f0ebfc;
+}
+.ss-card-title {
+  font-size: 21px;
+  color: #505050;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.ss-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px 18px;
+}
+.ss-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.ss-form-group input,
+.ss-form-group select,
+.ss-form-group textarea {
+  border: 1px solid #d9d7e0;
+  border-radius: 6px;
+  padding: 9px 11px;
+  font-size: 14px;
+  background: #f9f9fb;
+  color: #222;
+  outline: none;
+  resize: none;
+}
+
+.ss-form-group label {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 1px;
+  font-weight: 500;
+}
+.ss-form-group textarea {
+  min-height: 38px;
+  max-height: 55px;
+}
+.ss-upload-group .ss-upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ss-file-label {
+  cursor: pointer;
+  background: #f4eafd;
+  color: #7c3aed;
+  border-radius: 6px;
+  padding: 5px 13px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #e6d8fb;
+  transition: background 0.14s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ss-file-label:hover {
+  background: #ede6ff;
+}
+.ss-file-chosen {
+  color: #888;
+  font-size: 12px;
+}
+
+.ss-options-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 36px;
+  margin: 20px 0 16px 0;
+}
+.ss-options-row label {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #4e3e66;
+  font-weight: 500;
+}
+
+.ss-submit-btn {
+  background: #a98dff;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 29px;
+  cursor: pointer;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.12s;
+}
+.ss-submit-btn:hover {
+  background: #7c3aed;
+}
+
+.ss-cache-card {
+  margin-top: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.ss-cache-btn {
+  background: #eeeafd;
+  color: #7c3aed;
+  border: none;
+  border-radius: 7px;
+  padding: 11px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 7px;
+  margin-bottom: 6px;
+  transition: background 0.12s;
+}
+.ss-cache-btn:hover {
+  background: #e3d1ff;
+}
+
+.ss-footer {
+  max-width: 1700px;
+  margin: 30px auto 0 auto;
+  padding: 20px 36px 7px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  background: #f4eafd;
+  color: #7c3aed;
+  font-size: 15px;
+  font-weight: 500;
+}
+.ss-footer-logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 7px;
+}
+.ss-footer-logo span {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  background: #7c3aed;
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 35px;
+  font-weight: 700;
+  font-size: 21px;
+}
+.ss-buy-btn {
+  background: #a98dff;
+  color: #fff;
+  border: none;
+  border-radius: 17px;
+  padding: 7px 26px;
+  font-size: 14px;
+  margin-left: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.ss-buy-btn:hover {
+  background: #7c3aed;
+}
+
+@media (max-width: 1200px) {
+  .ss-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .ss-grid {
+    grid-template-columns: 1fr;
+  }
+  .ss-header {
+    padding: 8px 15px;
+  }
+  .ss-card, .ss-footer {
+    padding: 12px 7px;
+  }
+}

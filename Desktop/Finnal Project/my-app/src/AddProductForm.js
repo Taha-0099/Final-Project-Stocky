@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './SideBar';
 import './AddProductForm.css';
+import Header from './Header';
 
 const AddProductForm = () => {
   const navigate = useNavigate();
@@ -82,14 +83,12 @@ const AddProductForm = () => {
 
   return (
     <>
-      <Sidebar />
-      <header className="header">
-        <div className="header-left">
-          <span className="logo">Finnal Project</span>
-          <span className="status-indicator"></span>
-        </div>
-      </header>
 
+
+        <Header/>
+
+      <Sidebar />
+     
       <div className="form-container">
         <h1>Add new product</h1>
         <form className="product-form" onSubmit={handleSubmit}>

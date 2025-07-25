@@ -24,9 +24,10 @@ import {
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
 
 import SideBar from './SideBar';
+import Header from './Header';
 
 
-const LA = () => {
+const CE = () => {
   const transfers = [
     { AccountNo: '123123', AccountName: 'Ali', Balance: 120000, Notes: 'Bank 2' },
     { AccountNo: '456456', AccountName: 'Sara', Balance: 78000.5, Notes: 'Bank 1' },
@@ -34,24 +35,9 @@ const LA = () => {
 
   return (
     <>
+     <Header/>
       <SideBar />
-      <header className="dashboard-header">
-        <div className="logo-section">
-          <div className="logo">S</div>
-          <FontAwesomeIcon icon={faBars} className="icon" />
-        </div>
-        <div className="header-icons">
-          <button className="pos-btn">POS</button>
-          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
-          <FontAwesomeIcon icon={faGlobe} className="icon" />
-          <div className="notification-icon">
-            <FontAwesomeIcon icon={farBell} className="icon" />
-            <span className="badge">1</span>
-          </div>
-          <div className="brand-name">STOCKY</div>
-        </div>
-      </header>
-
+      
       <div className="at-container">
         <div className="at-header">
           <h2>

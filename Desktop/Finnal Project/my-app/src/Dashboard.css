@@ -215,33 +215,34 @@
   font-weight: 600;
 }
 
-.table-container {
+.table-container-rs {
   overflow-x: auto;
 }
 
-.table-container table {
-  width: 100%;
+.table-container-rs table {
+  width: 80%;
   border-collapse: collapse;
   margin-top: 10px;
 }
 
-.table-container th,
-.table-container td {
+.table-container-rs th,
+.table-container-rs td {
   padding: 12px 8px;
   text-align: left;
   border-bottom: 1px solid #e9ecef;
-  font-size: 14px;
+  font-size: 12px;
 }
 
-.table-container th {
+.table-container-rs th {
   background-color: #f8f9fa;
   font-weight: 600;
   color: #555;
   position: sticky;
   top: 0;
+  width: 3%;
 }
 
-.table-container tr:hover {
+.table-container-rs tr:hover {
   background-color: #f8f9fa;
 }
 
@@ -293,6 +294,15 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   border: 1px solid #e9ecef;
   margin-bottom: 20px;
+  width: 100%;
+}
+.recent-sales-container th{
+  width: 3%;
+  font-size: 10px;
+}
+.recent-sales-container td{
+  width: 3%;
+  font-size: 10px;
 }
 
 .recent-sales-container h4 {

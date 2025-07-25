@@ -3,10 +3,9 @@ import './Employ.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSearch, faFilter, faFilePdf, faFileExcel, faPlus,
-  faEye, faPen, faTimes
+  faEye, faPen, faTimes, faBars, faExpandArrowsAlt, faGlobe
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faExpandArrowsAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 
 import SideBar from './SideBar';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +24,7 @@ const Employ = () => {
       const data = await res.json();
       setEmployees(data);
     } catch (err) {
-      setEmployees([]); // fallback if error
+      setEmployees([]);
     }
   };
 
@@ -73,49 +72,53 @@ const Employ = () => {
             </button>
           </div>
         </div>
-        <div className="employ-table-wrap">
-          <table className="employ-table">
-            <thead>
-              <tr>
-                <th><input type="checkbox" /></th>
-                <th>FirstName <span className="sort-arrow">▼</span></th>
-                <th>LastName <span className="sort-arrow">▼</span></th>
-                <th>Phone <span className="sort-arrow">▼</span></th>
-                <th>Company <span className="sort-arrow">▼</span></th>
-                <th>Department <span className="sort-arrow">▼</span></th>
-                <th>Designation <span className="sort-arrow">▼</span></th>
-                <th>Office Shift <span className="sort-arrow">▼</span></th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {employees.length === 0 ? (
+        <div className="employ-table-container">
+          <div className="employ-table-wrap">
+            <table className="employ-table">
+              <thead>
                 <tr>
-                  <td colSpan={9} style={{ textAlign: "center", color: "#aaa" }}>
-                    No employees found.
-                  </td>
+                  <th className="checkbox-col"><input type="checkbox" /></th>
+                  <th className="firstname-col">First<span className="sort-arrow">▼</span></th>
+                  <th className="lastname-col">Last<span className="sort-arrow">▼</span></th>
+                  <th className="phone-col">Phone<span className="sort-arrow">▼</span></th>
+                  <th className="company-col">Company<span className="sort-arrow">▼</span></th>
+                  <th className="department-col">Dept.<span className="sort-arrow">▼</span></th>
+                  <th className="designation-col">Desig.<span className="sort-arrow">▼</span></th>
+                  <th className="shift-col">Shift<span className="sort-arrow">▼</span></th>
+                  <th className="action-col">Action</th>
                 </tr>
-              ) : (
-                employees.map((emp, idx) => (
-                  <tr key={emp._id || idx}>
-                    <td><input type="checkbox" /></td>
-                    <td>{emp.firstName}</td>
-                    <td>{emp.lastName}</td>
-                    <td>{emp.phone}</td>
-                    <td>{emp.company}</td>
-                    <td>{emp.department}</td>
-                    <td>{emp.designation}</td>
-                    <td>{emp.officeShift}</td>
-                    <td className="action-col">
-                      <button className="icon-btn view" title="View"><FontAwesomeIcon icon={faEye} /></button>
-                      <button className="icon-btn edit" title="Edit"><FontAwesomeIcon icon={faPen} /></button>
-                      <button className="icon-btn delete" title="Delete"><FontAwesomeIcon icon={faTimes} /></button>
+              </thead>
+              <tbody>
+                {employees.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} style={{ textAlign: "center", color: "#aaa" }}>
+                      No employees found.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  employees.map((emp, idx) => (
+                    <tr key={emp._id || idx}>
+                      <td className="checkbox-col"><input type="checkbox" /></td>
+                      <td className="firstname-col">{emp.firstName}</td>
+                      <td className="lastname-col">{emp.lastName}</td>
+                      <td className="phone-col">{emp.phone}</td>
+                      <td className="company-col">{emp.company}</td>
+                      <td className="department-col">{emp.department}</td>
+                      <td className="designation-col">{emp.designation}</td>
+                      <td className="shift-col">{emp.officeShift}</td>
+                      <td className="action-col">
+                        <div className="action-buttons">
+                          <button className="icon-btn view" title="View"><FontAwesomeIcon icon={faEye} /></button>
+                          <button className="icon-btn edit" title="Edit"><FontAwesomeIcon icon={faPen} /></button>
+                          <button className="icon-btn delete" title="Delete"><FontAwesomeIcon icon={faTimes} /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
         <div className="employ-footer-bar">
           <div>

@@ -7,9 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
   faExpandArrowsAlt,
-  faGlobe
+  faGlobe,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
+import Header from './Header';
+
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dnmtrydlv/image/upload';
+const UPLOAD_PRESET = 'demoPics'; 
+
 
 const CP = () => {
   const [formData, setFormData] = useState({
@@ -34,6 +40,7 @@ const CP = () => {
     hasSerialNumber: false,
     notForSelling: false
   });
+  const [imageUploading, setImageUploading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = e => {
@@ -44,10 +51,45 @@ const CP = () => {
     }));
   };
 
+  // Cloudinary image upload handler
+  const handleImageChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    setImageUploading(true);
+
+    const data = new FormData();
+    data.append('file', file);
+    data.append('upload_preset', UPLOAD_PRESET);
+
+    try {
+      const res = await fetch(CLOUDINARY_URL, {
+        method: 'POST',
+        body: data
+      });
+      const resData = await res.json();
+      if (resData.secure_url) {
+        setFormData(fd => ({
+          ...fd,
+          imgurl: resData.secure_url
+        }));
+      } else {
+        alert('Image upload failed. Please try again.');
+      }
+    } catch (err) {
+      alert('Image upload failed. Please check your connection or Cloudinary config.');
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
+    // Prevent submission if image not uploaded
+    if (!formData.imgurl) {
+      alert("Please upload a product image before submitting.");
+      return;
+    }
 
-    // Coerce numeric fields to numbers (empty → 0)
     const payload = {
       ...formData,
       productCost:   Number(formData.productCost)   || 0,
@@ -57,11 +99,18 @@ const CP = () => {
       openingStock2: Number(formData.openingStock2) || 0,
     };
 
+    // Ensure token exists
+    const token = localStorage.getItem('token saved');
+    if (!token) {
+      alert("You are not logged in! Please log in again.");
+      return;
+    }
+
     try {
       const res = await axios.post(
         'http://localhost:5001/Products/addProduct',
         payload,
-        { headers: { 'x-access-token': localStorage.getItem('token saved') } }
+        { headers: { 'x-access-token': token } }
       );
       console.log(res.data.message);
       navigate('/AP');
@@ -74,23 +123,9 @@ const CP = () => {
 
   return (
     <>
+     <Header/>
       <SideBar/>
-      <header className="dashboard-header">
-        <div className="logo-section">
-          <div className="logo">S</div>
-          <FontAwesomeIcon icon={faBars} className="icon"/>
-        </div>
-        <div className="header-icons">
-          <button className="pos-btn">POS</button>
-          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon"/>
-          <FontAwesomeIcon icon={faGlobe} className="icon"/>
-          <div className="notification-icon">
-            <FontAwesomeIcon icon={farBell} className="icon"/>
-            <span className="badge">1</span>
-          </div>
-          <div className="brand-name">STOCKY</div>
-        </div>
-      </header>
+     
 
       <div className="cp-container">
         <h2>
@@ -110,16 +145,39 @@ const CP = () => {
               />
             </div>
             <div className="cp-field">
-              <label>Image URL *</label>
-              <input
-                name="imgurl"
-                value={formData.imgurl}
-                onChange={handleChange}
-                placeholder="https://..."
-                required
-              />
+              <label>Product Image *</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ flex: 1 }}
+                  required={!formData.imgurl}
+                  disabled={imageUploading}
+                />
+                {imageUploading && (
+                  <FontAwesomeIcon icon={faSpinner} spin style={{ color: '#888', fontSize: 20 }} />
+                )}
+                {formData.imgurl && (
+                  <img
+                    src={formData.imgurl}
+                    alt="Preview"
+                    style={{ width: 38, height: 38, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee' }}
+                  />
+                )}
+              </div>
             </div>
           </div>
+
+          {/* Show the cloud URL in a readonly input for your info */}
+          {formData.imgurl && (
+            <div className="cp-row">
+              <div className="cp-field" style={{ width: '100%' }}>
+                <label>Image URL</label>
+                <input value={formData.imgurl} readOnly style={{ color: '#888', fontSize: 13 }} />
+              </div>
+            </div>
+          )}
 
           {/* Barcode & Code */}
           <div className="cp-row">
@@ -280,7 +338,14 @@ const CP = () => {
             </label>
           </div>
 
-          <button className="submit-btn" type="submit">Submit</button>
+          <button
+            className="submit-btn"
+            type="submit"
+            disabled={imageUploading || !formData.imgurl}
+          >
+            {imageUploading ? <FontAwesomeIcon icon={faSpinner} spin style={{ marginRight: 8 }} /> : null}
+            Submit
+          </button>
         </form>
       </div>
     </>

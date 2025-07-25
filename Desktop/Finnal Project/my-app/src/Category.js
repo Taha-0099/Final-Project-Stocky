@@ -1,28 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Category.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTimes, faPlus, faSearch, faBars, faExpandArrowsAlt, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
 import { Modal, Button, Form } from 'react-bootstrap';
 import SideBar from './SideBar';
+import axios from 'axios';
+import Header from './Header';
 
 const Category = () => {
-  const [categories, setCategories] = useState([
-    { code: 'CA6', name: 'Fruits' },
-    { code: 'CA5', name: 'Shoes' },
-    { code: 'CA4', name: 'T-Shirts' },
-    { code: 'CA3', name: 'Jackets' },
-    { code: 'CA2', name: 'Computers' },
-  ]);
+  const [categories, setCategories] = useState([]);
+  const [search, setSearch] = useState('');
   const [show, setShow] = useState(false);
+  const [editShow, setEditShow] = useState(false);
+  const [editCategory, setEditCategory] = useState({ code: '', name: '', index: -1 });
   const [newCategory, setNewCategory] = useState({ code: '', name: '' });
 
+  useEffect(() => {
+    fetchCategoriesFromProducts();
+  }, []);
+
+  const fetchCategoriesFromProducts = async () => {
+    try {
+      const res = await axios.get('http://localhost:5001/Products');
+      const products = res.data || [];
+
+      // Extract unique { code, name } pairs (assuming codeProduct and category fields)
+      const seen = {};
+      const uniqueCategories = [];
+      products.forEach((prod) => {
+        const code = prod.codeProduct;
+        const name = prod.category;
+        if (code && name && !seen[code]) {
+          uniqueCategories.push({ code, name });
+          seen[code] = true;
+        }
+      });
+      setCategories(uniqueCategories);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  };
+
+  // Create
   const handleShow = () => setShow(true);
   const handleClose = () => {
     setShow(false);
     setNewCategory({ code: '', name: '' });
   };
-
   const handleCreateCategory = () => {
     if (newCategory.code && newCategory.name) {
       setCategories([...categories, newCategory]);
@@ -30,26 +55,40 @@ const Category = () => {
     }
   };
 
+  // Edit
+  const handleEditShow = (cat, index) => {
+    setEditCategory({ ...cat, index });
+    setEditShow(true);
+  };
+  const handleEditClose = () => setEditShow(false);
+  const handleEditSave = () => {
+    const updated = [...categories];
+    updated[editCategory.index] = { code: editCategory.code, name: editCategory.name };
+    setCategories(updated);
+    handleEditClose();
+  };
+
+  // Delete
+  const handleDelete = (index) => {
+    if (window.confirm('Delete this category?')) {
+      setCategories(categories.filter((_, i) => i !== index));
+    }
+  };
+
+  // --- Search logic ---
+  const filteredCategories = categories.filter(
+    (cat) =>
+      cat.code.toLowerCase().includes(search.toLowerCase()) ||
+      cat.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
+            <Header/>
+    
       <SideBar />
 
-      <header className="dashboard-header">
-        <div className="logo-section">
-          <div className="logo">S</div>
-          <FontAwesomeIcon icon={faBars} className="icon" />
-        </div>
-        <div className="header-icons">
-          <button className="pos-btn">POS</button>
-          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
-          <FontAwesomeIcon icon={faGlobe} className="icon" />
-          <div className="notification-icon">
-            <FontAwesomeIcon icon={farBell} className="icon" />
-            <span className="badge">1</span>
-          </div>
-          <div className="brand-name">STOCKY</div>
-        </div>
-      </header>
+     
 
       <div className="category-main-content">
         <h2>
@@ -60,7 +99,12 @@ const Category = () => {
         <div className="category-toolbar">
           <div className="search-wrapper">
             <FontAwesomeIcon icon={faSearch} className="search-icon" />
-            <input type="text" placeholder="Search this table" />
+            <input
+              type="text"
+              placeholder="Search this table"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
           </div>
           <button className="create-btn" onClick={handleShow}>
             <FontAwesomeIcon icon={faPlus} /> Create
@@ -78,17 +122,28 @@ const Category = () => {
               </tr>
             </thead>
             <tbody>
-              {categories.map((cat, index) => (
+              {filteredCategories.map((cat, index) => (
                 <tr key={index}>
                   <td><input type="checkbox" /></td>
                   <td>{cat.code}</td>
                   <td>{cat.name}</td>
                   <td className="action-icons">
-                    <FontAwesomeIcon icon={faPen} className="edit" />
-                    <FontAwesomeIcon icon={faTimes} className="delete" />
+                    <span style={{ cursor: 'pointer', marginRight: '8px' }} onClick={() => handleEditShow(cat, categories.indexOf(cat))}>
+                      <FontAwesomeIcon icon={faPen} className="edit" />
+                    </span>
+                    <span style={{ cursor: 'pointer' }} onClick={() => handleDelete(categories.indexOf(cat))}>
+                      <FontAwesomeIcon icon={faTimes} className="delete" />
+                    </span>
                   </td>
                 </tr>
               ))}
+              {filteredCategories.length === 0 && (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center', color: '#888' }}>
+                    No categories found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -100,7 +155,7 @@ const Category = () => {
               <option>20</option>
             </select>
           </span>
-          <span>1 - {categories.length} of {categories.length}</span>
+          <span>1 - {filteredCategories.length} of {filteredCategories.length}</span>
           <span className="pagination">prev | next</span>
         </div>
 
@@ -114,7 +169,7 @@ const Category = () => {
         </footer>
       </div>
 
-      {/* Modal for adding category */}
+      {/* Modal for adding category (UI only) */}
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton>
           <Modal.Title>Create Category</Modal.Title>
@@ -142,6 +197,35 @@ const Category = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Cancel</Button>
           <Button variant="primary" onClick={handleCreateCategory}>Submit</Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal for editing category (UI only) */}
+      <Modal show={editShow} onHide={handleEditClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Category</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Category Code</Form.Label>
+            <Form.Control
+              type="text"
+              value={editCategory.code}
+              onChange={e => setEditCategory({ ...editCategory, code: e.target.value })}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>Category Name</Form.Label>
+            <Form.Control
+              type="text"
+              value={editCategory.name}
+              onChange={e => setEditCategory({ ...editCategory, name: e.target.value })}
+            />
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleEditClose}>Cancel</Button>
+          <Button variant="primary" onClick={handleEditSave}>Save</Button>
         </Modal.Footer>
       </Modal>
     </>
