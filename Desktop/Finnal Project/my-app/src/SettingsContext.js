@@ -9,15 +9,23 @@ export const SettingsProvider = ({ children }) => {
 
   // Fetch on mount
   useEffect(() => {
-    axios.get("http://localhost:5001/api/settings")
-      .then(res => setSettings(res.data))
-      .catch(() => setSettings(null))
-      .finally(() => setLoading(false));
+    fetchSettings();
+    // eslint-disable-next-line
   }, []);
 
-  // Provide state and updater
+  const fetchSettings = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get("http://localhost:5001/api/settings");
+      setSettings(res.data);
+    } catch (error) {
+      setSettings(null);
+    }
+    setLoading(false);
+  };
+
   return (
-    <SettingsContext.Provider value={{ settings, setSettings, loading }}>
+    <SettingsContext.Provider value={{ settings, setSettings, loading, fetchSettings }}>
       {children}
     </SettingsContext.Provider>
   );

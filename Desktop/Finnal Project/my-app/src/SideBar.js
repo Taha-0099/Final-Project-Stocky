@@ -102,6 +102,8 @@ const SideBar = () => {
           <Link to="/AS">All Sales</Link>
           <Link to="/POS">POS</Link>
           <Link to="/Ship">All Shipments</Link>
+          <Link to="/SD">Sale Details</Link>
+          <Link to="/ES">Edit Sale </Link>
         </div>
       </div>
 
@@ -214,9 +216,10 @@ const SideBar = () => {
         </Link>
         <div className={`dropdown settings-dropdown${settingsDropdown ? " show" : ""}`}>
           <Link to="/SS">System Settings</Link>
-          <Link to="/settings/dynamic_appearance">Dynamic Appearance</Link>
-          <Link to="/settings/languages">Languages</Link>
-          <Link to="/settings/payment_methods">Payment Methods</Link>
+          <Link to="/Appearance">Dynamic Appearance</Link>
+          <Link to="/Languages">Languages</Link>
+          <Link to="/PosSetting">POS Setting</Link>
+          <Link to="/CSR">CSR</Link>
           <Link to="/settings/sms_settings">Sms Settings</Link>
           <Link to="/settings/sms_templates">SMS Templates</Link>
           <Link to="/settings/mail_settings">Mail Settings</Link>

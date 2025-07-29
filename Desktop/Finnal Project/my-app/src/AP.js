@@ -1,199 +1,380 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './AP.css';
+import React, { useState, useEffect } from 'react';
+import './CreatePurchase.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
-  faFilter,
-  faFilePdf,
-  faFileExcel,
-  faFileImport,
-  faPlus,
-  faEye,
-  faPen,
-  faTimes,
+  faBarcode,
   faBars,
   faExpandArrowsAlt,
   faGlobe,
+  faShoppingCart,
+  faClipboardList,
+  faChartBar,
+  faBoxes,
+  faExchangeAlt,
+  faFileInvoice,
+  faArrowRight,
+  faArrowLeft,
+  faCog,
+  faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
-import { Link } from 'react-router-dom';
 import SideBar from './SideBar';
-import Header from './Header';
 
-const AP = () => {
-  const [products, setProducts] = useState([]);
-  const [deletingId, setDeletingId] = useState(null);
-  const [search, setSearch] = useState('');
+const CreatePurchase = () => {
+  const [form, setForm] = useState({
+    date: new Date().toISOString().split('T')[0],
+    supplier: '',
+    warehouse: '',
+    orderTax: 0,
+    discount: 0,
+    shipping: 0,
+    status: 'pending',
+    note: ''
+  });
 
+  // --- Product related state ---
+  const [allProducts, setAllProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const navigate = useNavigate();
+
+  // --- Fetch all products on mount ---
   useEffect(() => {
-    fetchProducts();
+    axios.get('http://localhost:5001/Products')
+      .then(res => setAllProducts(res.data))
+      .catch(() => setAllProducts([]));
   }, []);
 
-  const fetchProducts = () => {
-    axios
-      .get('http://localhost:5001/Products')
-      .then((res) => setProducts(res.data))
-      .catch((err) => console.error('Error fetching products:', err));
-  };
-
-  const getTotalQuantity = (prod) => {
-    const q1 = prod.openingStock1 || 0;
-    const q2 = prod.openingStock2 || 0;
-    return q1 + q2;
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
-    setDeletingId(id);
-    try {
-      await axios.delete(`http://localhost:5001/Products/${id}`);
-      setProducts((prev) => prev.filter((p) => p._id !== id));
-    } catch (err) {
-      alert('Failed to delete product. See console for details.');
-      console.error('Delete error:', err);
-    }
-    setDeletingId(null);
-  };
-
-  // FILTER PRODUCTS BY SEARCH BAR
-  const filteredProducts = products.filter((prod) => {
-    const searchStr = search.toLowerCase();
+  // --- Product search and filter logic ---
+  const filteredProducts = allProducts.filter(prod => {
+    const term = searchTerm.toLowerCase();
     return (
-      (prod.name && prod.name.toLowerCase().includes(searchStr)) ||
-      (prod.codeProduct && prod.codeProduct.toLowerCase().includes(searchStr)) ||
-      (prod.brand && prod.brand.toLowerCase().includes(searchStr)) ||
-      (prod.category && prod.category.toLowerCase().includes(searchStr))
+      prod.name?.toLowerCase().includes(term) ||
+      prod.codeProduct?.toLowerCase().includes(term)
     );
   });
 
+  // --- Add product to purchase list ---
+  const addProductToPurchase = (product) => {
+    setSelectedProducts(prev => {
+      if (prev.find(p => p._id === product._id)) return prev; // avoid duplicates
+      return [...prev, { ...product, qty: 1, discount: 0, tax: 0 }];
+    });
+  };
+
+  // --- Remove product from purchase list ---
+  const removeProductFromPurchase = (id) => {
+    setSelectedProducts(prev => prev.filter(p => p._id !== id));
+  };
+
+  // --- Update quantity, discount, or tax for product ---
+  const updateProductField = (id, field, value) => {
+    setSelectedProducts(prev => prev.map(p =>
+      p._id === id ? { ...p, [field]: value } : p
+    ));
+  };
+
+  // --- Calculate totals ---
+  const getSubtotal = (p) => {
+    const unitCost = Number(p.productCost) || 0;
+    const qty = Number(p.qty) || 0;
+    const discount = Number(p.discount) || 0;
+    const tax = Number(p.tax) || 0;
+    // subtotal = (unit cost * qty - discount) + tax
+    return Math.max(0, (unitCost * qty - discount) + tax);
+  };
+  const baseAmount = selectedProducts.reduce((sum, p) => sum + getSubtotal(p), 0);
+  const taxAmount = ((baseAmount - (Number(form.discount) || 0)) * (Number(form.orderTax) || 0)) / 100;
+  // Ensure grandTotal is never negative
+  const grandTotalRaw = baseAmount - (Number(form.discount) || 0) + (Number(form.shipping) || 0) + taxAmount;
+  const grandTotal = grandTotalRaw > 0 ? grandTotalRaw : 0;
+
+  // --- Handle Submit ---
+  const handleSubmit = async () => {
+    if (!form.supplier || !form.warehouse) {
+      alert('Please select supplier and warehouse');
+      return;
+    }
+    if (selectedProducts.length === 0) {
+      alert('Please add at least one product to purchase.');
+      return;
+    }
+
+    // Build the payload
+    const products = selectedProducts.map(p => ({
+      productId: p._id,
+      name: p.name,
+      codeProduct: p.codeProduct,
+      qty: Number(p.qty),
+      productCost: Number(p.productCost) || 0,
+      discount: Number(p.discount) || 0,
+      tax: Number(p.tax) || 0,
+      subtotal: getSubtotal(p)
+    }));
+
+    const payload = {
+      ...form,
+      orderTax: Number(form.orderTax) || 0,
+      discount: Number(form.discount) || 0,
+      shipping: Number(form.shipping) || 0,
+      total: grandTotal,
+      paid: 0,
+      products
+    };
+
+    try {
+      await axios.post('http://localhost:5001/Purchases', payload);
+      navigate('/APP'); // route to AllPurchase.js
+    } catch (err) {
+      const msg = err.response?.data?.error || err.message;
+      alert(`Could not create purchase: ${msg}`);
+    }
+  };
+
   return (
-    <div className="ap-page">
-
-              <Header/>
-
+    <>
       <SideBar />
-
-
-
-      <div className="ap-container">
-        <h2>
-          All Products <span className="breadcrumb">Products | All Products</span>
-        </h2>
-
-        <div className="ap-toolbar">
-          <input
-            type="text"
-            placeholder="Search this table"
-            className="ap-search"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-          <div className="ap-actions">
-            <button>
-              <FontAwesomeIcon icon={faFilter} /> Filter
-            </button>
-            <button>
-              <FontAwesomeIcon icon={faFilePdf} /> PDF
-            </button>
-            <button>
-              <FontAwesomeIcon icon={faFileExcel} /> EXCEL
-            </button>
-            <button>
-              <FontAwesomeIcon icon={faFileImport} /> Import
-            </button>
-            <Link to="/CP" className="create-btn">
-              <FontAwesomeIcon icon={faPlus} /> Create
-            </Link>
-          </div>
+      <header className="dashboard-header">
+        <div className="logo-section">
+          <div className="logo">S</div>
+          <FontAwesomeIcon icon={faBars} className="icon" />
         </div>
+        <div className="header-icons">
+          <button className="pos-btn">POS</button>
+          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
+          <FontAwesomeIcon icon={faGlobe} className="icon" />
+          <div className="notification-icon">
+            <FontAwesomeIcon icon={farBell} className="icon" />
+            <span className="badge">1</span>
+          </div>
+          <div className="brand-name">STOCKY</div>
+        </div>
+      </header>
 
-        <table className="ap-table">
-          <thead>
-            <tr>
-              <th><input type="checkbox" /></th>
-              <th>Image</th>
-              <th>Type</th>
-              <th>Name</th>
-              <th>Code</th>
-              <th>Brand</th>
-              <th>Category</th>
-              <th>Cost</th>
-              <th>Price</th>
-              <th>Unit</th>
-              <th>Quantity</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredProducts.map((prod) => (
-              <tr key={prod._id}>
-                <td><input type="checkbox" /></td>
-                <td>
-                  <img src={prod.imgurl} alt={prod.name} className="ap-img" />
-                </td>
-                <td>{prod.productType}</td>
-                <td>{prod.name}</td>
-                <td>{prod.codeProduct}</td>
-                <td>{prod.brand}</td>
-                <td>{prod.category}</td>
-                <td>{prod.productCost?.toFixed(2)}</td>
-                <td>{prod.productPrice?.toFixed(2)}</td>
-                <td>{prod.unit}</td>
-                <td>{getTotalQuantity(prod)}</td>
-                <td className="action-icons">
-                  <Link to={`/PD/${prod._id}`}>
-                    <FontAwesomeIcon icon={faEye} className="view" />
-                  </Link>
-                  <Link to={`/UP/${prod._id}`}>
-                    <FontAwesomeIcon icon={faPen} className="edit" />
-                  </Link>
-                  <span
-                    className="delete"
-                    title="Delete"
-                    style={{ cursor: deletingId === prod._id ? 'not-allowed' : 'pointer', color: deletingId === prod._id ? 'gray' : '#e74c3c' }}
-                    onClick={() => deletingId !== prod._id && handleDelete(prod._id)}
-                  >
-                    <FontAwesomeIcon icon={faTimes} spin={deletingId === prod._id} />
-                  </span>
-                </td>
-              </tr>
-            ))}
-            {filteredProducts.length === 0 && (
-              <tr>
-                <td colSpan="12" style={{ textAlign: 'center', color: '#888' }}>
-                  No products found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="cp-container">
+        <h2>Create Purchase <span className="breadcrumb">All Purchases | Create Purchase</span></h2>
+        <div className="cp-box">
+          <div className="cp-row">
+            <div className="cp-field">
+              <label>Date *</label>
+              <input
+                type="date"
+                value={form.date}
+                onChange={e => setForm({ ...form, date: e.target.value })}
+                required
+              />
+            </div>
+            <div className="cp-field">
+              <label>Supplier *</label>
+              <select
+                value={form.supplier}
+                onChange={e => setForm({ ...form, supplier: e.target.value })}
+                required
+              >
+                <option value="">Choose Supplier</option>
+                <option value="Supplier 1">Supplier 1</option>
+                {/* You can fetch real suppliers here */}
+              </select>
+            </div>
+            <div className="cp-field">
+              <label>Warehouse *</label>
+              <select
+                value={form.warehouse}
+                onChange={e => setForm({ ...form, warehouse: e.target.value })}
+                required
+              >
+                <option value="">Choose Warehouse</option>
+                <option value="Warehouse 1">Warehouse 1</option>
+                <option value="Warehouse 2">Warehouse 2</option>
+              </select>
+            </div>
+          </div>
 
-        <div className="ap-footer">
-          <span>
-            Rows per page:{' '}
-            <select>
-              <option>10</option>
-            </select>
-          </span>
-          <span>
-            {`1 - ${filteredProducts.length} of ${filteredProducts.length}`}
-          </span>
-          <span className="pagination">prev | next</span>
+          {/* ---- Product Search and Select ---- */}
+          <div className="product-search">
+            <label>Product</label>
+            <div className="search-input">
+              <FontAwesomeIcon icon={faBarcode} className="barcode-icon" />
+              <input
+                type="text"
+                placeholder="Scan/Search Product by Code Or Name"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+              {/* Product dropdown */}
+              {searchTerm && (
+                <div className="product-dropdown">
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.slice(0, 8).map(p => (
+                      <div
+                        key={p._id}
+                        className="product-dropdown-item"
+                        onClick={() => {
+                          addProductToPurchase(p);
+                          setSearchTerm('');
+                        }}
+                      >
+                        <span>{p.name} ({p.codeProduct})</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="product-dropdown-item">No matching product</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ---- Purchase Product Table ---- */}
+          <div className="product-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Product</th>
+                  <th>Net Unit Cost</th>
+                  <th>Current Stock</th>
+                  <th>Qty</th>
+                  <th>Discount</th>
+                  <th>Tax</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedProducts.length === 0 ? (
+                  <tr>
+                    <td colSpan="9" className="no-data">No data Available</td>
+                  </tr>
+                ) : (
+                  selectedProducts.map((p, idx) => (
+                    <tr key={p._id}>
+                      <td>{idx + 1}</td>
+                      <td>{p.name} <br /><span style={{color:'#888'}}>{p.codeProduct}</span></td>
+                      <td>${Number(p.productCost).toFixed(2)}</td>
+                      <td>{(p.openingStock1 || 0) + (p.openingStock2 || 0)}</td>
+                      <td>
+                        <input
+                          type="number"
+                          min="1"
+                          style={{width: 60}}
+                          value={p.qty}
+                          onChange={e => updateProductField(p._id, 'qty', Math.max(1, Number(e.target.value)))}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          style={{width: 60}}
+                          value={p.discount}
+                          onChange={e => updateProductField(p._id, 'discount', Math.max(0, Number(e.target.value)))}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          min="0"
+                          style={{width: 60}}
+                          value={p.tax}
+                          onChange={e => updateProductField(p._id, 'tax', Math.max(0, Number(e.target.value)))}
+                        />
+                      </td>
+                      <td>${getSubtotal(p).toFixed(2)}</td>
+                      <td>
+                        <button
+                          className="remove-btn"
+                          onClick={() => removeProductFromPurchase(p._id)}
+                          title="Remove Product"
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="summary-row">
+            <div className="left-fields">
+              <div className="flex-row">
+                <label>Order Tax</label>
+                <input
+                  type="number"
+                  value={form.orderTax}
+                  min="0"
+                  onChange={e => setForm({ ...form, orderTax: e.target.value })}
+                />
+                <span className="inline-symbol">%</span>
+              </div>
+              <div className="flex-row">
+                <label>Discount</label>
+                <input
+                  type="number"
+                  value={form.discount}
+                  min="0"
+                  onChange={e => setForm({ ...form, discount: e.target.value })}
+                />
+                <span className="inline-symbol">$</span>
+              </div>
+              <div className="flex-row">
+                <label>Shipping</label>
+                <input
+                  type="number"
+                  value={form.shipping}
+                  min="0"
+                  onChange={e => setForm({ ...form, shipping: e.target.value })}
+                />
+                <span className="inline-symbol">$</span>
+              </div>
+              <div className="flex-row">
+                <label>Status</label>
+                <select
+                  value={form.status}
+                  onChange={e => setForm({ ...form, status: e.target.value })}
+                >
+                  <option value="pending">pending</option>
+                  <option value="ordered">ordered</option>
+                  <option value="completed">completed</option>
+                </select>
+              </div>
+            </div>
+            <div className="right-summary">
+              <p>Order Tax: <strong>${taxAmount.toFixed(2)} ({parseFloat(form.orderTax || 0).toFixed(2)}%)</strong></p>
+              <p>Discount: <strong>${parseFloat(form.discount || 0).toFixed(2)}</strong></p>
+              <p>Shipping: <strong>${parseFloat(form.shipping || 0).toFixed(2)}</strong></p>
+              <p className="grand-total">Grand Total: <strong>${grandTotal.toFixed(2)}</strong></p>
+            </div>
+          </div>
+
+          <div className="note-area">
+            <label>Note</label>
+            <textarea
+              placeholder="A few words..."
+              value={form.note}
+              onChange={e => setForm({ ...form, note: e.target.value })}
+            />
+          </div>
+
+          <button className="submit-btn" onClick={handleSubmit}>Submit</button>
         </div>
 
         <footer className="footer">
           <div>
-            <strong>Stocky - Ultimate Inventory With POS</strong>
-            <br />
-            © 2025 Developed by Stocky
-            <br />
+            <strong>Stocky - Ultimate Inventory With POS</strong><br />
+            © 2025 Developed by Stocky<br />
             All rights reserved - v4.0.9
           </div>
           <div className="footer-logo">S</div>
         </footer>
       </div>
-    </div>
+    </>
   );
 };
 
-export default AP;
+export default CreatePurchase;

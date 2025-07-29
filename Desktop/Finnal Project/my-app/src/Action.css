@@ -1,0 +1,89 @@
+/* Action.css */
+.menu-item:hover {
+  background: #f4f2ff;
+}
+.menu-item.danger:hover {
+  background: #fbeaea;
+  color: #c0392b !important;
+}
+.dots-menu {
+  animation: fadeInMenu 0.13s;
+}
+@keyframes fadeInMenu {
+  from { opacity: 0; transform: translateY(8px);}
+  to   { opacity: 1; transform: none;}
+}
+.table-container {
+  max-height: 62vh;    /* Adjust based on your layout */
+  overflow-y: auto !important;
+  overflow-x: auto;
+  position: relative;
+}
+
+.centered-menu {
+  box-shadow: 0 12px 48px #7f61da27;
+  animation: popup-fade 0.18s;
+  border-radius: 16px !important;
+}
+
+@keyframes popup-fade {
+  from { opacity: 0; transform: translate(-50%,-48%) scale(0.95);}
+  to   { opacity: 1; transform: translate(-50%,-50%) scale(1);}
+}
+
+.modal-overlay {
+  /* Style provided in JS inline, add here for safety */
+  background: rgba(35,20,50,0.13);
+  z-index: 9999;
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+}
+@keyframes popup-fade {
+  from { opacity: 0; transform: translateY(-6px);}
+  to   { opacity: 1; transform: translateY(0);}
+}
+.dots-menu {
+  min-width: 240px;
+  max-width: 320px;
+  border-radius: 14px;
+  box-shadow: 0 12px 48px #7f61da27;
+  z-index: 10000;
+}
+.menu-item {
+  padding: 13px 22px;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: background 0.15s;
+}
+.menu-item:hover {
+  background: #f6efff;
+}
+.menu-item.danger:hover {
+  background: #fdeaea;
+  color: #e74c3c !important;
+}
+.dots-btn:focus { outline: none; }
+@keyframes popup-fade {
+  from { opacity: 0; transform: translateY(-6px);}
+  to   { opacity: 1; transform: translateY(0);}
+}
+.menu-item {
+  padding: 10px 22px;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: background 0.15s;
+}
+.menu-item:hover {
+  background: #f6efff;
+}
+.menu-item.danger:hover {
+  background: #fdeaea;
+  color: #e74c3c !important;
+}
+.dots-btn:focus { outline: none; }
+.dots-menu { font-size: 14px; min-width: 250px; }

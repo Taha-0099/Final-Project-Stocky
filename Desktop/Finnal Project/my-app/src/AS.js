@@ -4,13 +4,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSearch, faFilter, faFilePdf, faFileExcel,
   faBarcode, faBars, faPlus, faEdit, faTrash,
-  faExpandArrowsAlt, faGlobe, faEye, faCog
+  faExpandArrowsAlt, faGlobe, faEye, faCog,
+  faMoneyCheckDollar, faDownload, faEnvelope, faMobileAlt,
+  faShippingFast, faFileInvoice, faCommentDots
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
+import { faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 import SideBar from './SideBar';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import Action from './Action';
 
 const AS = () => {
   const [sales, setSales] = useState([]);
@@ -28,13 +33,25 @@ const AS = () => {
       .catch(err => console.error('Error fetching sales:', err));
   };
 
+  const navigate = useNavigate();
+
   const handleDelete = async (saleId) => {
-    if (!window.confirm('Are you sure you want to delete this sale?')) return;
-    try {
-      await axios.delete(`http://localhost:5001/Sales/${saleId}`);
-      setSales(sales.filter(s => s._id !== saleId));
-    } catch (err) {
-      alert('Failed to delete sale.');
+    const res = await Swal.fire({
+      title: 'Delete Sale?',
+      text: 'Are you sure you want to delete this sale?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Delete',
+      confirmButtonColor: '#e74c3c'
+    });
+    if (res.isConfirmed) {
+      try {
+        await axios.delete(`http://localhost:5001/Sales/${saleId}`);
+        setSales(sales.filter(s => s._id !== saleId));
+        Swal.fire('Deleted!', '', 'success');
+      } catch (err) {
+        Swal.fire('Error', 'Failed to delete sale.', 'error');
+      }
     }
   };
 
@@ -44,8 +61,35 @@ const AS = () => {
   };
 
   const handleView = (sale) => {
-    // Add view functionality here
-    console.log('View sale:', sale);
+    Swal.fire('Sale Detail', `Sale Ref: ${sale.ref}`, 'info');
+  };
+
+  const handleShowPayments = (sale) => {
+    Swal.fire('Payments', `Payment detail for sale: ${sale.ref}`, 'info');
+  };
+
+  const handleEditShipping = (sale) => {
+    Swal.fire('Edit Shipping', `Edit shipping for sale: ${sale.ref}`, 'info');
+  };
+
+  const handleInvoicePOS = (sale) => {
+    Swal.fire('Invoice POS', `Show invoice for sale: ${sale.ref}`, 'info');
+  };
+
+  const handleDownloadPdf = (sale) => {
+    Swal.fire('Download PDF', `Download PDF for sale: ${sale.ref}`, 'info');
+  };
+
+  const handleWhatsApp = (sale) => {
+    Swal.fire('WhatsApp', `Send WhatsApp notification for sale: ${sale.ref}`, 'info');
+  };
+
+  const handleEmail = (sale) => {
+    Swal.fire('Email', `Send email for sale: ${sale.ref}`, 'info');
+  };
+
+  const handleSms = (sale) => {
+    Swal.fire('SMS', `Send SMS for sale: ${sale.ref}`, 'info');
   };
 
   const handleEditFormChange = (field, value) => {
@@ -66,7 +110,7 @@ const AS = () => {
       fetchSales();
       setShowEditModal(false);
     } catch (err) {
-      alert('Failed to save changes.');
+      Swal.fire('Error', 'Failed to save changes.', 'error');
     }
   };
 
@@ -181,9 +225,7 @@ const AS = () => {
           <table className="as-table">
             <thead>
               <tr>
-                <th className="checkbox-col">
-                  <input type="checkbox" />
-                </th>
+                <th className="checkbox-col"><input type="checkbox" /></th>
                 <th className="date-col">Date</th>
                 <th className="reference-col">Reference</th>
                 <th className="addedby-col">Added by</th>
@@ -201,28 +243,18 @@ const AS = () => {
             <tbody>
               {filteredSales.map((s, idx) => (
                 <tr key={s._id}>
-                  <td className="checkbox-col">
-                    <input type="checkbox" />
-                  </td>
+                  <td className="checkbox-col"><input type="checkbox" /></td>
                   <td className="date-col">{formatDate(s.date)}</td>
-                  <td className="reference-col">
-                    <span className="link">{s.ref}</span>
-                  </td>
+                  <td className="reference-col"><span className="link">{s.ref}</span></td>
                   <td className="addedby-col">{s.addedBy || 'William Castillo'}</td>
                   <td className="customer-col">{s.customer}</td>
                   <td className="warehouse-col">{s.warehouse || 'Warehouse 1'}</td>
                   <td className="status-col">
                     <span className={`status ${s.status}`}>{s.status}</span>
                   </td>
-                  <td className="total-col">
-                    {(s.total == null ? 0 : s.total).toFixed(2)}
-                  </td>
-                  <td className="paid-col">
-                    {(s.paid == null ? 0 : s.paid).toFixed(2)}
-                  </td>
-                  <td className="due-col">
-                    {calculateDue(s.total, s.paid)}
-                  </td>
+                  <td className="total-col">{(s.total == null ? 0 : s.total).toFixed(2)}</td>
+                  <td className="paid-col">{(s.paid == null ? 0 : s.paid).toFixed(2)}</td>
+                  <td className="due-col">{calculateDue(s.total, s.paid)}</td>
                   <td className="payment-status-col">
                     <span className={`status ${getPaymentStatus(s.total, s.paid).toLowerCase()}`}>
                       {getPaymentStatus(s.total, s.paid)}
@@ -233,30 +265,25 @@ const AS = () => {
                       {getShippingStatus(s.status)}
                     </span>
                   </td>
-                  <td className="action-col">
-                    <div className="action-buttons-row">
-                      <button
-                        className="action-btn view-btn"
-                        onClick={() => handleView(s)}
-                        title="View"
-                      >
-                        <FontAwesomeIcon icon={faEye} />
-                      </button>
-                      <button
-                        className="action-btn edit-btn"
-                        onClick={() => handleEdit(s)}
-                        title="Edit"
-                      >
-                        <FontAwesomeIcon icon={faEdit} />
-                      </button>
-                      <button
-                        className="action-btn delete-btn"
-                        onClick={() => handleDelete(s._id)}
-                        title="Delete"
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
-                    </div>
+                  <td className="action-col" style={{ position: "relative" }}>
+                    <Action
+                      menuItems={[
+                        {
+                          icon: faEye,
+                          label: "Sale Detail",
+                          onClick: () => navigate(`/SD/${s._id}`),
+                        },
+                        { icon: faEdit, label: "Edit Sale", onClick: () => handleEdit(s) },
+                        { icon: faMoneyCheckDollar, label: "Show Payments", onClick: () => handleShowPayments(s) },
+                        { icon: faShippingFast, label: "Edit Shipping", onClick: () => handleEditShipping(s) },
+                        { icon: faFileInvoice, label: "Invoice POS", onClick: () => handleInvoicePOS(s) },
+                        { icon: faDownload, label: "Download Pdf", onClick: () => handleDownloadPdf(s) },
+                        { icon: faWhatsapp, label: "WhatsApp Notification", onClick: () => handleWhatsApp(s) },
+                        { icon: faEnvelope, label: "Email notification", onClick: () => handleEmail(s) },
+                        { icon: faCommentDots, label: "SMS notification", onClick: () => handleSms(s) },
+                        { icon: faTrash, label: "Delete Sale", onClick: () => handleDelete(s._id), danger: true }
+                      ]}
+                    />
                   </td>
                 </tr>
               ))}

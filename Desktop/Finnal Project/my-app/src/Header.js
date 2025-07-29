@@ -59,7 +59,6 @@ function Header() {
 
 
 
-<Footer/>
 </>
   );
 }
