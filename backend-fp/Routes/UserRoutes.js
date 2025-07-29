@@ -8,5 +8,8 @@ const userController = require('../App/Controllers/UserController');
 router.post('/register',   userController.register);
 router.post('/login',      userController.login);
 router.get( '/verifyToken', userController.verifyToken);
+router.get('/all', userController.getAll);
+router.patch('/update/:id', userController.update);
+router.delete('/delete/:id', userController.delete);
 
 module.exports = router;
