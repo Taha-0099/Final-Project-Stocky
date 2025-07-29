@@ -828,4 +828,16 @@ body {
   overflow-x: auto;
   position: relative;
 }
+.modal-icon-btn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  transition: background 0.15s;
+  border-radius: 5px;
+}
+.modal-icon-btn:hover {
+  background: #f6f2ff;
+}
 

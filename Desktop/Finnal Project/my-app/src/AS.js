@@ -18,14 +18,16 @@ import Swal from 'sweetalert2';
 import Action from './Action';
 
 const AS = () => {
+  // Main sale states
   const [sales, setSales] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState(null);
   const [search, setSearch] = useState('');
+  // Payments modal states
+  const [showPayments, setShowPayments] = useState(false);
+  const [paymentsData, setPaymentsData] = useState(null);
 
-  useEffect(() => {
-    fetchSales();
-  }, []);
+  useEffect(() => { fetchSales(); }, []);
 
   const fetchSales = () => {
     axios.get('http://localhost:5001/Sales')
@@ -60,12 +62,14 @@ const AS = () => {
     setShowEditModal(true);
   };
 
-  const handleView = (sale) => {
-    Swal.fire('Sale Detail', `Sale Ref: ${sale.ref}`, 'info');
-  };
-
   const handleShowPayments = (sale) => {
-    Swal.fire('Payments', `Payment detail for sale: ${sale.ref}`, 'info');
+    setPaymentsData({
+      date: sale.date ? sale.date.split('T')[0] : '',
+      reference: sale.ref ? `INV/${sale.ref}` : '',
+      amount: sale.paid || 0,
+      paidBy: sale.paidBy || "Cash",
+    });
+    setShowPayments(true);
   };
 
   const handleEditShipping = (sale) => {
@@ -114,36 +118,30 @@ const AS = () => {
     }
   };
 
-  // Helper function to format date
+  // Format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
+      year: 'numeric', month: '2-digit', day: '2-digit'
     }) + ' ' + date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
     });
   };
 
-  // Helper function to calculate due amount
+  // Calculate due
   const calculateDue = (total, paid) => {
     const t = (total == null ? 0 : total);
     const p = (paid == null ? 0 : paid);
     return (t - p).toFixed(2);
   };
 
-  // Helper function to determine payment status
+  // Payment/Shipping status
   const getPaymentStatus = (total, paid) => {
     const paidAmount = (paid == null ? 0 : paid);
     if (paidAmount === 0) return 'Unpaid';
     if (paidAmount >= (total == null ? 0 : total)) return 'Paid';
     return 'Partial';
   };
-
-  // Helper function to get shipping status
   const getShippingStatus = (status) => {
     if (status === 'completed') return 'Delivered';
     if (status === 'pending') return 'Packed';
@@ -151,11 +149,10 @@ const AS = () => {
     return 'Packed';
   };
 
-  // ---- Search logic ----
+  // Search logic
   const filteredSales = sales.filter((s) => {
     const q = search.trim().toLowerCase();
     if (!q) return true;
-    // Search by customer, reference, status, or any product name in products array
     return (
       (s.customer && s.customer.toLowerCase().includes(q)) ||
       (s.ref && s.ref.toLowerCase().includes(q)) ||
@@ -167,6 +164,56 @@ const AS = () => {
       ))
     );
   });
+
+  // --- Show Payments Modal Component ---
+  const PaymentsModal = ({ open, onClose, data }) => {
+    if (!open || !data) return null;
+    return (
+      <div style={{
+        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+        background: 'rgba(0,0,0,0.17)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 9999
+      }}>
+        <div style={{
+          background: '#fff', borderRadius: 12, padding: '32px 24px', minWidth: 480, maxWidth: 620, boxShadow: '0 2px 30px #b393e733', position: 'relative'
+        }}>
+          <div style={{ fontSize: 26, fontWeight: 600, marginBottom: 24 }}>Show Payments
+            <span
+              style={{ position: "absolute", top: 18, right: 24, cursor: "pointer", fontSize: 23, color: "#bbb" }}
+              onClick={onClose}
+              title="Close"
+            >&#10005;</span>
+          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 20 }}>
+            <thead>
+              <tr style={{ background: "#faf8fd", color: "#444" }}>
+                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Date</th>
+                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Reference</th>
+                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Amount</th>
+                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Paid By</th>
+                <th style={{ textAlign: "center", padding: "10px 14px", fontWeight: 500 }}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style={{ padding: "10px 14px" }}>{data.date}</td>
+                <td style={{ padding: "10px 14px" }}>{data.reference}</td>
+                <td style={{ padding: "10px 14px" }}>${Number(data.amount).toFixed(2)}</td>
+                <td style={{ padding: "10px 14px" }}>{data.paidBy}</td>
+                <td style={{ textAlign: "center", padding: "10px 14px" }}>
+                  <button className="modal-icon-btn" title="POS Invoice"><FontAwesomeIcon icon={faFileInvoice} style={{ color: "#4682ea", fontSize: 18, margin: "0 4px" }} /></button>
+                  <button className="modal-icon-btn" title="Edit"><FontAwesomeIcon icon={faEdit} style={{ color: "#34be80", fontSize: 18, margin: "0 4px" }} /></button>
+                  <button className="modal-icon-btn" title="Email"><FontAwesomeIcon icon={faEnvelope} style={{ color: "#7e63ea", fontSize: 18, margin: "0 4px" }} /></button>
+                  <button className="modal-icon-btn" title="SMS"><FontAwesomeIcon icon={faCommentDots} style={{ color: "#a46cee", fontSize: 18, margin: "0 4px" }} /></button>
+                  <button className="modal-icon-btn" title="Delete"><FontAwesomeIcon icon={faTrash} style={{ color: "#e35d5e", fontSize: 18, margin: "0 4px" }} /></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -437,6 +484,12 @@ const AS = () => {
           </div>
         </div>
       )}
+
+      <PaymentsModal
+        open={showPayments}
+        onClose={() => setShowPayments(false)}
+        data={paymentsData}
+      />
 
       <button className="buy-stocky-btn">Buy Stocky</button>
     </>
