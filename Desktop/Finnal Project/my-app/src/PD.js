@@ -23,10 +23,10 @@ const PD = () => {
     return <div className="pd-loading">Loading product details…</div>;
   }
 
-  // Prepare warehouse display
+  // Prepare warehouse display (show only quantity, NO unit)
   const warehouses = [
-    { name: 'Warehouse 1', qty: `${product.openingStock1 || 0} ${product.unit}` },
-    { name: 'Warehouse 2', qty: `${product.openingStock2 || 0} ${product.unit}` },
+    { name: 'Warehouse 1', qty: product.openingStock1 || 0 },
+    { name: 'Warehouse 2', qty: product.openingStock2 || 0 },
   ];
 
   // Tax is not in your model yet, so we’ll default to N/A
@@ -34,7 +34,7 @@ const PD = () => {
 
   return (
     <>
-      <SideBar/>
+      <SideBar />
 
       <header className="dashboard-header">
         <div className="logo-section">
@@ -79,8 +79,8 @@ const PD = () => {
                 <tr><td>Product</td><td>{product.name}</td></tr>
                 <tr><td>Category</td><td>{product.category || '—'}</td></tr>
                 <tr><td>Brand</td><td>{product.brand || '—'}</td></tr>
-                <tr><td>Cost</td><td>${product.productCost.toFixed(2)}</td></tr>
-                <tr><td>Price</td><td>${product.productPrice.toFixed(2)}</td></tr>
+                <tr><td>Cost</td><td>${Number(product.productCost).toFixed(2)}</td></tr>
+                <tr><td>Price</td><td>${Number(product.productPrice).toFixed(2)}</td></tr>
                 <tr><td>Unit</td><td>{product.unit}</td></tr>
                 <tr><td>Tax</td><td>{taxDisplay}</td></tr>
                 <tr><td>Stock Alert</td><td>{product.stockAlert ?? '0'}</td></tr>

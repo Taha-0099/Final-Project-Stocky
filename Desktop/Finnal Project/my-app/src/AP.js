@@ -1,380 +1,250 @@
-import React, { useState, useEffect } from 'react';
-import './CreatePurchase.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBarcode,
-  faBars,
-  faExpandArrowsAlt,
-  faGlobe,
-  faShoppingCart,
-  faClipboardList,
-  faChartBar,
-  faBoxes,
-  faExchangeAlt,
-  faFileInvoice,
-  faArrowRight,
-  faArrowLeft,
-  faCog,
-  faTrash
-} from '@fortawesome/free-solid-svg-icons';
-import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
-import SideBar from './SideBar';
+  faSearch, faFilter, faFilePdf, faFileExcel, faPlus, faEye, faEdit, faTimes
+} from "@fortawesome/free-solid-svg-icons";
+import "./AP.css";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import Header from "./Header";
+import SideBar from "./SideBar";
+import { useNavigate } from "react-router-dom";
 
-const CreatePurchase = () => {
-  const [form, setForm] = useState({
-    date: new Date().toISOString().split('T')[0],
-    supplier: '',
-    warehouse: '',
-    orderTax: 0,
-    discount: 0,
-    shipping: 0,
-    status: 'pending',
-    note: ''
-  });
+const API_URL = "http://localhost:5001/Products";
 
-  // --- Product related state ---
-  const [allProducts, setAllProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProducts, setSelectedProducts] = useState([]);
+const defaultProduct = {
+  name: "",
+  imgurl: "",
+  barcodeSymbology: "",
+  codeProduct: "",
+  category: "",
+  brand: "",
+  unit: "",
+  productType: "",
+  productCost: "",
+  productPrice: "",
+  openingStock1: "",
+};
 
+function AP() {
+  const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
-  // --- Fetch all products on mount ---
-  useEffect(() => {
-    axios.get('http://localhost:5001/Products')
-      .then(res => setAllProducts(res.data))
-      .catch(() => setAllProducts([]));
-  }, []);
+  useEffect(() => { fetchProducts(); }, []);
 
-  // --- Product search and filter logic ---
-  const filteredProducts = allProducts.filter(prod => {
-    const term = searchTerm.toLowerCase();
-    return (
-      prod.name?.toLowerCase().includes(term) ||
-      prod.codeProduct?.toLowerCase().includes(term)
-    );
-  });
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(API_URL);
+      setProducts(res.data);
+    } catch (err) {
+      Swal.fire("Error", "Failed to fetch products.", "error");
+    }
+  };
 
-  // --- Add product to purchase list ---
-  const addProductToPurchase = (product) => {
-    setSelectedProducts(prev => {
-      if (prev.find(p => p._id === product._id)) return prev; // avoid duplicates
-      return [...prev, { ...product, qty: 1, discount: 0, tax: 0 }];
+  // --- Delete Product ---
+  const handleDelete = (prod) => {
+    Swal.fire({
+      title: "Delete?",
+      text: `Are you sure you want to delete "${prod.name}"?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      confirmButtonColor: "#e74c3c"
+    }).then(async (res) => {
+      if (res.isConfirmed) {
+        try {
+          await axios.delete(`${API_URL}/${prod._id}`);
+          Swal.fire("Deleted!", "", "success");
+          fetchProducts();
+        } catch (err) {
+          Swal.fire("Error", err?.response?.data?.message || "Delete failed.", "error");
+        }
+      }
     });
   };
 
-  // --- Remove product from purchase list ---
-  const removeProductFromPurchase = (id) => {
-    setSelectedProducts(prev => prev.filter(p => p._id !== id));
+  // --- Export Excel ---
+  const exportExcel = () => {
+    const wscols = [
+      "Image", "Type", "Name", "Code", "Brand", "Category", "Cost", "Price", "Unit", "Quantity"
+    ];
+    const rows = products.map(p => [
+      p.imgurl,
+      p.productType || "",
+      p.name || "",
+      p.codeProduct || "",
+      p.brand || "",
+      p.category || "",
+      p.productCost != null ? p.productCost.toFixed(2) : "",
+      p.productPrice != null ? p.productPrice.toFixed(2) : "",
+      p.unit || "",
+      p.openingStock1 != null ? p.openingStock1 : ""
+    ]);
+    const worksheet = XLSX.utils.aoa_to_sheet([wscols, ...rows]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "products");
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([wbout], { type: "application/octet-stream" }), "products.xlsx");
   };
 
-  // --- Update quantity, discount, or tax for product ---
-  const updateProductField = (id, field, value) => {
-    setSelectedProducts(prev => prev.map(p =>
-      p._id === id ? { ...p, [field]: value } : p
-    ));
+  // --- Export PDF ---
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    const tableColumn = [
+      "Type", "Name", "Code", "Brand", "Category", "Cost", "Price", "Unit", "Quantity"
+    ];
+    const tableRows = products.map(p => [
+      p.productType || "",
+      p.name || "",
+      p.codeProduct || "",
+      p.brand || "",
+      p.category || "",
+      p.productCost != null ? p.productCost.toFixed(2) : "",
+      p.productPrice != null ? p.productPrice.toFixed(2) : "",
+      p.unit || "",
+      p.openingStock1 != null ? p.openingStock1 : ""
+    ]);
+    doc.autoTable({ head: [tableColumn], body: tableRows, startY: 20, styles: { fontSize: 9 } });
+    doc.save("products.pdf");
   };
 
-  // --- Calculate totals ---
-  const getSubtotal = (p) => {
-    const unitCost = Number(p.productCost) || 0;
-    const qty = Number(p.qty) || 0;
-    const discount = Number(p.discount) || 0;
-    const tax = Number(p.tax) || 0;
-    // subtotal = (unit cost * qty - discount) + tax
-    return Math.max(0, (unitCost * qty - discount) + tax);
-  };
-  const baseAmount = selectedProducts.reduce((sum, p) => sum + getSubtotal(p), 0);
-  const taxAmount = ((baseAmount - (Number(form.discount) || 0)) * (Number(form.orderTax) || 0)) / 100;
-  // Ensure grandTotal is never negative
-  const grandTotalRaw = baseAmount - (Number(form.discount) || 0) + (Number(form.shipping) || 0) + taxAmount;
-  const grandTotal = grandTotalRaw > 0 ? grandTotalRaw : 0;
-
-  // --- Handle Submit ---
-  const handleSubmit = async () => {
-    if (!form.supplier || !form.warehouse) {
-      alert('Please select supplier and warehouse');
-      return;
-    }
-    if (selectedProducts.length === 0) {
-      alert('Please add at least one product to purchase.');
-      return;
-    }
-
-    // Build the payload
-    const products = selectedProducts.map(p => ({
-      productId: p._id,
-      name: p.name,
-      codeProduct: p.codeProduct,
-      qty: Number(p.qty),
-      productCost: Number(p.productCost) || 0,
-      discount: Number(p.discount) || 0,
-      tax: Number(p.tax) || 0,
-      subtotal: getSubtotal(p)
-    }));
-
-    const payload = {
-      ...form,
-      orderTax: Number(form.orderTax) || 0,
-      discount: Number(form.discount) || 0,
-      shipping: Number(form.shipping) || 0,
-      total: grandTotal,
-      paid: 0,
-      products
-    };
-
-    try {
-      await axios.post('http://localhost:5001/Purchases', payload);
-      navigate('/APP'); // route to AllPurchase.js
-    } catch (err) {
-      const msg = err.response?.data?.error || err.message;
-      alert(`Could not create purchase: ${msg}`);
-    }
-  };
+  // --- Filtered Table ---
+  const filtered = products.filter((p) => {
+    const q = search.trim().toLowerCase();
+    return (
+      !q ||
+      (p.name && p.name.toLowerCase().includes(q)) ||
+      (p.codeProduct && p.codeProduct.toLowerCase().includes(q)) ||
+      (p.brand && p.brand.toLowerCase().includes(q)) ||
+      (p.category && p.category.toLowerCase().includes(q)) ||
+      (p.productType && p.productType.toLowerCase().includes(q))
+    );
+  });
 
   return (
     <>
+      <Header />
       <SideBar />
-      <header className="dashboard-header">
-        <div className="logo-section">
-          <div className="logo">S</div>
-          <FontAwesomeIcon icon={faBars} className="icon" />
-        </div>
-        <div className="header-icons">
-          <button className="pos-btn">POS</button>
-          <FontAwesomeIcon icon={faExpandArrowsAlt} className="icon" />
-          <FontAwesomeIcon icon={faGlobe} className="icon" />
-          <div className="notification-icon">
-            <FontAwesomeIcon icon={farBell} className="icon" />
-            <span className="badge">1</span>
+      <div className="all-products-root">
+        <div className="ap-main">
+          <div className="ap-title-block">
+            <h2>All Products</h2>
+            <span className="ap-breadcrumb">Products | All Products</span>
           </div>
-          <div className="brand-name">STOCKY</div>
-        </div>
-      </header>
-
-      <div className="cp-container">
-        <h2>Create Purchase <span className="breadcrumb">All Purchases | Create Purchase</span></h2>
-        <div className="cp-box">
-          <div className="cp-row">
-            <div className="cp-field">
-              <label>Date *</label>
-              <input
-                type="date"
-                value={form.date}
-                onChange={e => setForm({ ...form, date: e.target.value })}
-                required
-              />
-            </div>
-            <div className="cp-field">
-              <label>Supplier *</label>
-              <select
-                value={form.supplier}
-                onChange={e => setForm({ ...form, supplier: e.target.value })}
-                required
-              >
-                <option value="">Choose Supplier</option>
-                <option value="Supplier 1">Supplier 1</option>
-                {/* You can fetch real suppliers here */}
-              </select>
-            </div>
-            <div className="cp-field">
-              <label>Warehouse *</label>
-              <select
-                value={form.warehouse}
-                onChange={e => setForm({ ...form, warehouse: e.target.value })}
-                required
-              >
-                <option value="">Choose Warehouse</option>
-                <option value="Warehouse 1">Warehouse 1</option>
-                <option value="Warehouse 2">Warehouse 2</option>
-              </select>
-            </div>
-          </div>
-
-          {/* ---- Product Search and Select ---- */}
-          <div className="product-search">
-            <label>Product</label>
-            <div className="search-input">
-              <FontAwesomeIcon icon={faBarcode} className="barcode-icon" />
+          <div className="ap-toolbar">
+            <div className="ap-search-box">
+              <FontAwesomeIcon icon={faSearch} />
               <input
                 type="text"
-                placeholder="Scan/Search Product by Code Or Name"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                placeholder="Search this table"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
               />
-              {/* Product dropdown */}
-              {searchTerm && (
-                <div className="product-dropdown">
-                  {filteredProducts.length > 0 ? (
-                    filteredProducts.slice(0, 8).map(p => (
-                      <div
-                        key={p._id}
-                        className="product-dropdown-item"
-                        onClick={() => {
-                          addProductToPurchase(p);
-                          setSearchTerm('');
-                        }}
-                      >
-                        <span>{p.name} ({p.codeProduct})</span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="product-dropdown-item">No matching product</div>
-                  )}
-                </div>
-              )}
+            </div>
+            <div className="ap-toolbar-actions">
+              <button className="ap-btn" style={{ color: "#666" }}><FontAwesomeIcon icon={faFilter} /> Filter</button>
+              <button className="ap-btn" style={{ color: "#28a745" }} onClick={exportPDF}><FontAwesomeIcon icon={faFilePdf} /> PDF</button>
+              <button className="ap-btn" style={{ color: "#007bff" }} onClick={exportExcel}><FontAwesomeIcon icon={faFileExcel} /> EXCEL</button>
+              <button className="ap-btn" style={{ color: "#a771ef" }} onClick={() => Swal.fire("Import", "Import products feature coming soon!", "info")}>Import products</button>
+              <button className="ap-btn ap-create-btn" onClick={() => navigate("/CP")}>
+                <FontAwesomeIcon icon={faPlus} /> Create
+              </button>
             </div>
           </div>
-
-          {/* ---- Purchase Product Table ---- */}
-          <div className="product-table">
-            <table>
+          <div className="ap-table-wrapper">
+            <table className="ap-table">
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Product</th>
-                  <th>Net Unit Cost</th>
-                  <th>Current Stock</th>
-                  <th>Qty</th>
-                  <th>Discount</th>
-                  <th>Tax</th>
-                  <th>Subtotal</th>
-                  <th></th>
+                  <th><input type="checkbox" /></th>
+                  <th>Image</th>
+                  <th>Type</th>
+                  <th>Name</th>
+                  <th>Code</th>
+                  <th>Brand</th>
+                  <th>Category</th>
+                  <th>Cost</th>
+                  <th>Price</th>
+                  <th>Unit</th>
+                  <th>Quantity</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {selectedProducts.length === 0 ? (
-                  <tr>
-                    <td colSpan="9" className="no-data">No data Available</td>
+                {filtered.map(prod => (
+                  <tr key={prod._id}>
+                    <td><input type="checkbox" /></td>
+                    <td>
+                      <img src={prod.imgurl} alt={prod.name} style={{ width: 34, height: 34, objectFit: "contain", borderRadius: 6, border: "1px solid #f0f0f0", background: "#fff" }} />
+                    </td>
+                    <td>{prod.productType || "Single"}</td>
+                    <td>{prod.name}</td>
+                    <td>{prod.codeProduct}</td>
+                    <td>{prod.brand || "N/D"}</td>
+                    <td>{prod.category}</td>
+                    <td>{prod.productCost != null ? prod.productCost.toFixed(2) : ""}</td>
+                    <td>{prod.productPrice != null ? prod.productPrice.toFixed(2) : ""}</td>
+                    <td>{prod.unit}</td>
+                    <td>{prod.openingStock1 != null ? prod.openingStock1 : ""}</td>
+                    <td>
+                      <span
+                        className="ap-icon-btn"
+                        title="View"
+                        onClick={() => navigate(`/PD/${prod._id}`)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <FontAwesomeIcon icon={faEye} />
+                      </span>
+                      <span
+                        className="ap-icon-btn"
+                        title="Edit"
+                        onClick={() => navigate(`/UP/${prod._id}`)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <FontAwesomeIcon icon={faEdit} />
+                      </span>
+                      <span
+                        className="ap-icon-btn"
+                        title="Delete"
+                        onClick={() => handleDelete(prod)}
+                        style={{ color: "#e74c3c", cursor: "pointer" }}
+                      >
+                        <FontAwesomeIcon icon={faTimes} />
+                      </span>
+                    </td>
                   </tr>
-                ) : (
-                  selectedProducts.map((p, idx) => (
-                    <tr key={p._id}>
-                      <td>{idx + 1}</td>
-                      <td>{p.name} <br /><span style={{color:'#888'}}>{p.codeProduct}</span></td>
-                      <td>${Number(p.productCost).toFixed(2)}</td>
-                      <td>{(p.openingStock1 || 0) + (p.openingStock2 || 0)}</td>
-                      <td>
-                        <input
-                          type="number"
-                          min="1"
-                          style={{width: 60}}
-                          value={p.qty}
-                          onChange={e => updateProductField(p._id, 'qty', Math.max(1, Number(e.target.value)))}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          min="0"
-                          style={{width: 60}}
-                          value={p.discount}
-                          onChange={e => updateProductField(p._id, 'discount', Math.max(0, Number(e.target.value)))}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          min="0"
-                          style={{width: 60}}
-                          value={p.tax}
-                          onChange={e => updateProductField(p._id, 'tax', Math.max(0, Number(e.target.value)))}
-                        />
-                      </td>
-                      <td>${getSubtotal(p).toFixed(2)}</td>
-                      <td>
-                        <button
-                          className="remove-btn"
-                          onClick={() => removeProductFromPurchase(p._id)}
-                          title="Remove Product"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                ))}
+                {filtered.length === 0 &&
+                  <tr>
+                    <td colSpan="12" style={{ textAlign: "center", color: "#aaa" }}>No products found.</td>
+                  </tr>
+                }
               </tbody>
             </table>
           </div>
-
-          <div className="summary-row">
-            <div className="left-fields">
-              <div className="flex-row">
-                <label>Order Tax</label>
-                <input
-                  type="number"
-                  value={form.orderTax}
-                  min="0"
-                  onChange={e => setForm({ ...form, orderTax: e.target.value })}
-                />
-                <span className="inline-symbol">%</span>
-              </div>
-              <div className="flex-row">
-                <label>Discount</label>
-                <input
-                  type="number"
-                  value={form.discount}
-                  min="0"
-                  onChange={e => setForm({ ...form, discount: e.target.value })}
-                />
-                <span className="inline-symbol">$</span>
-              </div>
-              <div className="flex-row">
-                <label>Shipping</label>
-                <input
-                  type="number"
-                  value={form.shipping}
-                  min="0"
-                  onChange={e => setForm({ ...form, shipping: e.target.value })}
-                />
-                <span className="inline-symbol">$</span>
-              </div>
-              <div className="flex-row">
-                <label>Status</label>
-                <select
-                  value={form.status}
-                  onChange={e => setForm({ ...form, status: e.target.value })}
-                >
-                  <option value="pending">pending</option>
-                  <option value="ordered">ordered</option>
-                  <option value="completed">completed</option>
-                </select>
-              </div>
-            </div>
-            <div className="right-summary">
-              <p>Order Tax: <strong>${taxAmount.toFixed(2)} ({parseFloat(form.orderTax || 0).toFixed(2)}%)</strong></p>
-              <p>Discount: <strong>${parseFloat(form.discount || 0).toFixed(2)}</strong></p>
-              <p>Shipping: <strong>${parseFloat(form.shipping || 0).toFixed(2)}</strong></p>
-              <p className="grand-total">Grand Total: <strong>${grandTotal.toFixed(2)}</strong></p>
-            </div>
+          <div className="ap-footer-bar">
+            <span>1 - {filtered.length} of {products.length}</span>
+            <span className="ap-footer-pagination">
+              <span className="ap-footer-link ap-footer-link-disabled">prev</span>
+              <span className="ap-footer-link ap-footer-link-disabled">next</span>
+            </span>
           </div>
-
-          <div className="note-area">
-            <label>Note</label>
-            <textarea
-              placeholder="A few words..."
-              value={form.note}
-              onChange={e => setForm({ ...form, note: e.target.value })}
-            />
-          </div>
-
-          <button className="submit-btn" onClick={handleSubmit}>Submit</button>
+          <footer className="ap-main-footer">
+            <div>
+              <strong>Stocky - Ultimate Inventory With POS</strong><br />
+              © 2025 Developed by Stocky<br />
+              All rights reserved - v4.0.9
+            </div>
+            <div className="footer-logo">S</div>
+          </footer>
         </div>
-
-        <footer className="footer">
-          <div>
-            <strong>Stocky - Ultimate Inventory With POS</strong><br />
-            © 2025 Developed by Stocky<br />
-            All rights reserved - v4.0.9
-          </div>
-          <div className="footer-logo">S</div>
-        </footer>
       </div>
     </>
   );
-};
+}
 
-export default CreatePurchase;
+export default AP;

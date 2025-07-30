@@ -5,7 +5,7 @@ import {
   faSearch, faFilter, faFilePdf, faFileExcel,
   faBarcode, faBars, faPlus, faEdit, faTrash,
   faExpandArrowsAlt, faGlobe, faEye, faCog,
-  faMoneyCheckDollar, faDownload, faEnvelope, faMobileAlt,
+  faMoneyCheckDollar, faDownload, faEnvelope,
   faShippingFast, faFileInvoice, faCommentDots
 } from '@fortawesome/free-solid-svg-icons';
 import { faBell as farBell } from '@fortawesome/free-regular-svg-icons';
@@ -17,15 +17,23 @@ import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Action from './Action';
 
+// ---- Excel & PDF Export ----
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import autoTable from "jspdf-autotable";
 const AS = () => {
-  // Main sale states
   const [sales, setSales] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState(null);
   const [search, setSearch] = useState('');
-  // Payments modal states
   const [showPayments, setShowPayments] = useState(false);
   const [paymentsData, setPaymentsData] = useState(null);
+
+  // Edit Payment Modal states
+  const [showEditPayment, setShowEditPayment] = useState(false);
+  const [editPaymentData, setEditPaymentData] = useState(null);
 
   useEffect(() => { fetchSales(); }, []);
 
@@ -36,6 +44,64 @@ const AS = () => {
   };
 
   const navigate = useNavigate();
+
+  // ----- Export to Excel -----
+  const exportToExcel = () => {
+    // Table headers
+    const wscols = [
+      "Date", "Reference", "Added by", "Customer", "Warehouse",
+      "Status", "Grand Total", "Paid", "Due", "Payment Status", "Shipping Status"
+    ];
+    // Prepare rows
+    const rows = sales.map(s => ([
+      s.date ? new Date(s.date).toLocaleDateString('en-CA') : '',
+      s.ref || '',
+      s.addedBy || '',
+      s.customer || '',
+      s.warehouse || '',
+      s.status || '',
+      s.total != null ? s.total.toFixed(2) : '0.00',
+      s.paid != null ? s.paid.toFixed(2) : '0.00',
+      ((s.total||0)-(s.paid||0)).toFixed(2),
+      getPaymentStatus(s.total, s.paid).toLowerCase(),
+      getShippingStatus(s.status).toLowerCase(),
+    ]));
+    const worksheet = XLSX.utils.aoa_to_sheet([wscols, ...rows]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "sales");
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([wbout], { type: "application/octet-stream" }), "sales.xlsx");
+  };
+
+  // ----- Export to PDF -----
+ const exportToPDF = () => {
+  const doc = new jsPDF();
+  const tableColumn = [
+    "Date", "Reference", "Added by", "Customer", "Warehouse",
+    "Status", "Grand Total", "Paid", "Due", "Payment Status", "Shipping Status"
+  ];
+  const tableRows = sales.map(s => ([
+    s.date ? new Date(s.date).toLocaleDateString('en-CA') : '',
+    s.ref || '',
+    s.addedBy || '',
+    s.customer || '',
+    s.warehouse || '',
+    s.status || '',
+    s.total != null ? s.total.toFixed(2) : '0.00',
+    s.paid != null ? s.paid.toFixed(2) : '0.00',
+    ((s.total||0)-(s.paid||0)).toFixed(2),
+    getPaymentStatus(s.total, s.paid).toLowerCase(),
+    getShippingStatus(s.status).toLowerCase(),
+  ]));
+  autoTable(doc, {
+    head: [tableColumn],
+    body: tableRows,
+    startY: 20,
+    styles: { fontSize: 9 }
+  });
+  doc.save('sales.pdf');
+};
+
 
   const handleDelete = async (saleId) => {
     const res = await Swal.fire({
@@ -64,12 +130,48 @@ const AS = () => {
 
   const handleShowPayments = (sale) => {
     setPaymentsData({
+      _id: sale._id,
+      customer: sale.customer,
       date: sale.date ? sale.date.split('T')[0] : '',
       reference: sale.ref ? `INV/${sale.ref}` : '',
+      rawRef: sale.ref || '',
       amount: sale.paid || 0,
       paidBy: sale.paidBy || "Cash",
+      account: sale.account || '',
+      note: sale.note || '',
     });
     setShowPayments(true);
+  };
+
+  // ------ Edit Payment Logic ------
+  const handleEditPayment = () => {
+    setEditPaymentData({ ...paymentsData });
+    setShowEditPayment(true);
+  };
+
+  const handleEditPaymentField = (field, value) => {
+    setEditPaymentData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleEditPaymentSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`http://localhost:5001/Sales/${editPaymentData._id}`, {
+        paid: editPaymentData.amount,
+        paidBy: editPaymentData.paidBy,
+        account: editPaymentData.account,
+        note: editPaymentData.note
+      });
+      setShowEditPayment(false);
+      setShowPayments(false);
+      fetchSales();
+      Swal.fire('Success', 'Payment updated successfully!', 'success');
+    } catch (err) {
+      Swal.fire('Error', 'Failed to update payment.', 'error');
+    }
   };
 
   const handleEditShipping = (sale) => {
@@ -136,18 +238,19 @@ const AS = () => {
   };
 
   // Payment/Shipping status
-  const getPaymentStatus = (total, paid) => {
+  function getPaymentStatus(total, paid) {
     const paidAmount = (paid == null ? 0 : paid);
     if (paidAmount === 0) return 'Unpaid';
     if (paidAmount >= (total == null ? 0 : total)) return 'Paid';
     return 'Partial';
-  };
-  const getShippingStatus = (status) => {
+  }
+  function getShippingStatus(status) {
     if (status === 'completed') return 'Delivered';
-    if (status === 'pending') return 'Packed';
+    if (status === 'pending') return 'Shipped';
     if (status === 'ordered') return 'Packed';
-    return 'Packed';
-  };
+    if (status === 'cancelled') return 'Cancelled';
+    return status || '';
+  }
 
   // Search logic
   const filteredSales = sales.filter((s) => {
@@ -166,51 +269,214 @@ const AS = () => {
   });
 
   // --- Show Payments Modal Component ---
-  const PaymentsModal = ({ open, onClose, data }) => {
+  const PaymentsModal = ({ open, onClose, data, onEdit }) => {
     if (!open || !data) return null;
     return (
       <div style={{
         position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-        background: 'rgba(0,0,0,0.17)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'rgba(0,0,0,0.19)', display: 'flex', alignItems: 'center', justifyContent: 'center',
         zIndex: 9999
       }}>
         <div style={{
-          background: '#fff', borderRadius: 12, padding: '32px 24px', minWidth: 480, maxWidth: 620, boxShadow: '0 2px 30px #b393e733', position: 'relative'
+          background: '#fff',
+          borderRadius: 16,
+          padding: '28px 16px 24px 16px',
+          minWidth: 320,
+          width: '100%',
+          maxWidth: 500,
+          boxShadow: '0 2px 30px #b393e744',
+          position: 'relative',
+          overflowX: 'auto'
         }}>
-          <div style={{ fontSize: 26, fontWeight: 600, marginBottom: 24 }}>Show Payments
+          <div style={{ fontSize: 26, fontWeight: 600, marginBottom: 20 }}>Show Payments
             <span
-              style={{ position: "absolute", top: 18, right: 24, cursor: "pointer", fontSize: 23, color: "#bbb" }}
+              style={{ position: "absolute", top: 18, right: 22, cursor: "pointer", fontSize: 23, color: "#bbb" }}
               onClick={onClose}
               title="Close"
             >&#10005;</span>
           </div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 20 }}>
-            <thead>
-              <tr style={{ background: "#faf8fd", color: "#444" }}>
-                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Date</th>
-                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Reference</th>
-                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Amount</th>
-                <th style={{ textAlign: "left", padding: "10px 14px", fontWeight: 500 }}>Paid By</th>
-                <th style={{ textAlign: "center", padding: "10px 14px", fontWeight: 500 }}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ padding: "10px 14px" }}>{data.date}</td>
-                <td style={{ padding: "10px 14px" }}>{data.reference}</td>
-                <td style={{ padding: "10px 14px" }}>${Number(data.amount).toFixed(2)}</td>
-                <td style={{ padding: "10px 14px" }}>{data.paidBy}</td>
-                <td style={{ textAlign: "center", padding: "10px 14px" }}>
-                  <button className="modal-icon-btn" title="POS Invoice"><FontAwesomeIcon icon={faFileInvoice} style={{ color: "#4682ea", fontSize: 18, margin: "0 4px" }} /></button>
-                  <button className="modal-icon-btn" title="Edit"><FontAwesomeIcon icon={faEdit} style={{ color: "#34be80", fontSize: 18, margin: "0 4px" }} /></button>
-                  <button className="modal-icon-btn" title="Email"><FontAwesomeIcon icon={faEnvelope} style={{ color: "#7e63ea", fontSize: 18, margin: "0 4px" }} /></button>
-                  <button className="modal-icon-btn" title="SMS"><FontAwesomeIcon icon={faCommentDots} style={{ color: "#a46cee", fontSize: 18, margin: "0 4px" }} /></button>
-                  <button className="modal-icon-btn" title="Delete"><FontAwesomeIcon icon={faTrash} style={{ color: "#e35d5e", fontSize: 18, margin: "0 4px" }} /></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div style={{ width: "100%", overflowX: "auto" }}>
+            <table style={{
+              width: '100%',
+              minWidth: 430,
+              borderCollapse: 'collapse',
+              fontSize: 14,
+              marginBottom: 10
+            }}>
+              <thead>
+                <tr style={{ background: "#faf8fd", color: "#444" }}>
+                  <th style={{ textAlign: "left", padding: "9px 14px", fontWeight: 500 }}>Date</th>
+                  <th style={{ textAlign: "left", padding: "9px 14px", fontWeight: 500 }}>Reference</th>
+                  <th style={{ textAlign: "left", padding: "9px 14px", fontWeight: 500 }}>Amount</th>
+                  <th style={{ textAlign: "left", padding: "9px 14px", fontWeight: 500 }}>Paid By</th>
+                  <th style={{ textAlign: "center", padding: "9px 14px", fontWeight: 500 }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: "9px 14px", maxWidth: 80, wordBreak: "break-all" }}>{data.date}</td>
+                  <td style={{ padding: "9px 14px", maxWidth: 140, wordBreak: "break-all" }}>{data.reference}</td>
+                  <td style={{ padding: "9px 14px" }}>${Number(data.amount).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+                  <td style={{ padding: "9px 14px" }}>{data.paidBy}</td>
+                  <td style={{ textAlign: "center", padding: "9px 14px" }}>
+                    <button className="modal-icon-btn" title="POS Invoice"><FontAwesomeIcon icon={faFileInvoice} style={{ color: "#4682ea", fontSize: 17, margin: "0 3px" }} /></button>
+                    <button className="modal-icon-btn" title="Edit" onClick={onEdit}><FontAwesomeIcon icon={faEdit} style={{ color: "#34be80", fontSize: 17, margin: "0 3px" }} /></button>
+                    <button className="modal-icon-btn" title="Email"><FontAwesomeIcon icon={faEnvelope} style={{ color: "#7e63ea", fontSize: 17, margin: "0 3px" }} /></button>
+                    <button className="modal-icon-btn" title="SMS"><FontAwesomeIcon icon={faCommentDots} style={{ color: "#a46cee", fontSize: 17, margin: "0 3px" }} /></button>
+                    <button className="modal-icon-btn" title="Delete"><FontAwesomeIcon icon={faTrash} style={{ color: "#e35d5e", fontSize: 17, margin: "0 3px" }} /></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
+    );
+  };
+
+  // ---- Edit Payment Modal (already present) ----
+  const EditPaymentModal = ({ open, onClose, data, onChange, onSubmit }) => {
+    if (!open || !data) return null;
+    return (
+      <div style={{
+        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+        background: 'rgba(0,0,0,0.19)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 10000
+      }}>
+        <form
+          style={{
+            background: '#fff',
+            borderRadius: 16,
+            padding: '34px 30px 30px 30px',
+            minWidth: 540,
+            maxWidth: 650,
+            boxShadow: '0 2px 32px #b393e744',
+            position: 'relative',
+            overflowX: 'auto',
+            width: '100%'
+          }}
+          onSubmit={onSubmit}
+        >
+          <div style={{ fontSize: 26, fontWeight: 600, marginBottom: 16 }}>
+            Edit Payment
+            <span
+              style={{ position: "absolute", top: 22, right: 30, cursor: "pointer", fontSize: 23, color: "#bbb" }}
+              onClick={onClose}
+              title="Close"
+            >&#10005;</span>
+          </div>
+          <div style={{ fontSize: 28, fontWeight: 500, marginBottom: 22, textAlign: 'center' }}>
+            {data.customer || ''}
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
+            <div style={{ flex: 1, minWidth: 190 }}>
+              <label>Date</label>
+              <input
+                type="date"
+                className="edit-field"
+                value={data.date || ''}
+                onChange={e => onChange('date', e.target.value)}
+                style={{ width: "100%", marginBottom: 16 }}
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: 190 }}>
+              <label>Reference</label>
+              <input
+                type="text"
+                className="edit-field"
+                value={data.reference || ''}
+                readOnly
+                style={{ width: "100%", marginBottom: 16 }}
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: 190 }}>
+              <label>Payment choice</label>
+              <select
+                value={data.paidBy}
+                onChange={e => onChange('paidBy', e.target.value)}
+                style={{ width: "100%", marginBottom: 16 }}
+              >
+                <option value="Cash">Cash</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Bank">Bank</option>
+                <option value="Cheque">Cheque</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
+            <div style={{ flex: 1, minWidth: 190 }}>
+              <label>Received Amount</label>
+              <input
+                type="number"
+                className="edit-field"
+                value={data.amount}
+                onChange={e => onChange('amount', e.target.value)}
+                style={{ width: "100%", marginBottom: 16 }}
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: 190 }}>
+              <label>Paying Amount</label>
+              <input
+                type="number"
+                className="edit-field"
+                value={data.amount}
+                readOnly
+                style={{ width: "100%", marginBottom: 16 }}
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: 190 }}>
+              <label>Change Return</label>
+              <input
+                type="text"
+                className="edit-field"
+                value={(Number(data.amount) - Number(data.amount)).toFixed(2)}
+                readOnly
+                style={{ width: "100%", marginBottom: 16, color: "red" }}
+              />
+            </div>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
+            <div style={{ flex: 1, minWidth: 190 }}>
+              <label>Account</label>
+              <select
+                value={data.account}
+                onChange={e => onChange('account', e.target.value)}
+                style={{ width: "100%", marginBottom: 16 }}
+              >
+                <option value="">Choose Account</option>
+                <option value="Account 1">Account 1</option>
+                <option value="Account 2">Account 2</option>
+                <option value="Account 3">Account 3</option>
+              </select>
+            </div>
+            <div style={{ flex: 2, minWidth: 220 }}>
+              <label>Note</label>
+              <textarea
+                className="edit-field"
+                value={data.note || ''}
+                onChange={e => onChange('note', e.target.value)}
+                rows={3}
+                style={{ width: "100%", marginBottom: 16 }}
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            style={{
+              background: '#8b4cf5',
+              color: 'white',
+              border: 'none',
+              padding: '11px 32px',
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: 17,
+              marginTop: 12,
+              cursor: 'pointer'
+            }}
+          >
+            <FontAwesomeIcon icon={faEdit} /> Submit
+          </button>
+        </form>
       </div>
     );
   };
@@ -256,10 +522,10 @@ const AS = () => {
             <button className="filter-btn">
               <FontAwesomeIcon icon={faFilter} /> Filter
             </button>
-            <button className="pdf-btn">
+            <button className="pdf-btn" onClick={exportToPDF}>
               <FontAwesomeIcon icon={faFilePdf} /> PDF
             </button>
-            <button className="excel-btn">
+            <button className="excel-btn" onClick={exportToExcel}>
               <FontAwesomeIcon icon={faFileExcel} /> EXCEL
             </button>
             <Link to="/CR" className="create-btn">
@@ -420,6 +686,7 @@ const AS = () => {
                 <option value="pending">pending</option>
                 <option value="completed">completed</option>
                 <option value="ordered">ordered</option>
+                <option value="cancelled">cancelled</option>
               </select>
             </div>
             <div className="form-group">
@@ -489,6 +756,15 @@ const AS = () => {
         open={showPayments}
         onClose={() => setShowPayments(false)}
         data={paymentsData}
+        onEdit={handleEditPayment}
+      />
+
+      <EditPaymentModal
+        open={showEditPayment}
+        onClose={() => setShowEditPayment(false)}
+        data={editPaymentData}
+        onChange={handleEditPaymentField}
+        onSubmit={handleEditPaymentSubmit}
       />
 
       <button className="buy-stocky-btn">Buy Stocky</button>
